@@ -1,72 +1,14 @@
-use std::str::FromStr;
-
+use crate::token::Token;
 use nom::{
     branch::alt,
-    bytes::complete::{tag, take, take_until},
+    bytes::complete::{is_not, tag},
     character::complete::{alpha1, alphanumeric1, anychar, char, digit1, multispace0},
-    combinator::{eof, map, map_res, recognize},
+    combinator::{map, map_res, recognize},
     multi::{many0, many1},
     sequence::{delimited, pair, tuple},
     IResult,
 };
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum Token {
-    Illegal,
-    EOF,
-    // identifier and literals
-    Ident(String),
-    IntLiteral(i64),
-    BoolLiteral(bool),
-    // operators
-    Question,
-    Becomes,
-    And,
-    Or,
-    Not,
-    Iff,
-    Imply,
-    LtlFinally,
-    LtlGlobally,
-    LtlHistorically,
-    LtlOnce,
-    LtlSince,
-    LtlTriggered,
-    LtlUntil,
-    LtlReleases,
-    LtlNext,
-    LtlYesterday,
-    LtlWeakyesterday,
-
-    // reserved words
-    Case,
-    Esac,
-    Next,
-    // reserved type word
-    Boolean,
-    // reserved section words
-    Module,
-    Define,
-    InputVar,
-    LatchVar,
-    Constant,
-    Init,
-    Invariant,
-    Trans,
-    Fairness,
-    LtlSpec,
-
-    // punctuations
-    Comma,
-    Colon,
-    SemiColon,
-    LParen,
-    RParen,
-    LBrace,
-    RBrace,
-    LBracket,
-    RBracket,
-}
+use std::str::FromStr;
 
 macro_rules! syntax {
     ($func_name: ident, $tag_string: literal, $output_token: expr) => {
@@ -78,7 +20,7 @@ macro_rules! syntax {
 
 syntax! {and_operator, "&", Token::And}
 syntax! {or_operator, "|", Token::Or}
-syntax! {question_operator, "?", Token::Question}
+syntax! {question_operator, "?", Token::Conditional}
 syntax! {becomes_operator, ":=", Token::Becomes}
 syntax! {not_operator, "!", Token::Not}
 syntax! {iff_operator, "<->", Token::Iff}
@@ -113,10 +55,10 @@ syntax! {semicolon_punctuation, ";", Token::SemiColon}
 syntax! {colon_punctuation, ":", Token::Colon}
 syntax! {lparen_punctuation, "(", Token::LParen}
 syntax! {rparen_punctuation, ")", Token::RParen}
-syntax! {lbrace_punctuation, "{", Token::LBrace}
-syntax! {rbrace_punctuation, "}", Token::RBrace}
-syntax! {lbracket_punctuation, "[", Token::LBracket}
-syntax! {rbracket_punctuation, "]", Token::RBracket}
+// syntax! {lbrace_punctuation, "{", Token::LBrace}
+// syntax! {rbrace_punctuation, "}", Token::RBrace}
+// syntax! {lbracket_punctuation, "[", Token::LBracket}
+// syntax! {rbracket_punctuation, "]", Token::RBracket}
 
 pub fn lex_punctuations(input: &str) -> IResult<&str, Token> {
     alt((
@@ -125,10 +67,10 @@ pub fn lex_punctuations(input: &str) -> IResult<&str, Token> {
         colon_punctuation,
         lparen_punctuation,
         rparen_punctuation,
-        lbrace_punctuation,
-        rbrace_punctuation,
-        lbracket_punctuation,
-        rbracket_punctuation,
+        // lbrace_punctuation,
+        // rbrace_punctuation,
+        // lbracket_punctuation,
+        // rbracket_punctuation,
     ))(input)
 }
 
@@ -178,38 +120,24 @@ fn lex_token(input: &str) -> IResult<&str, Token> {
 }
 
 fn comment_line(input: &str) -> IResult<&str, Vec<Token>> {
-    tuple((many0(char(' ')), tag("--"), many0(anychar), eof))(input).map(|res| (res.0, Vec::new()))
+    tuple((many0(char(' ')), tag("--"), many0(anychar)))(input).map(|res| (res.0, Vec::new()))
 }
 
-fn empty_line(input: &str) -> IResult<&str, Vec<Token>> {
-    tuple((many0(char(' ')), eof))(input).map(|res| (res.0, Vec::new()))
-}
-
-fn lex_tokens_in_line(input: &str) -> Result<Vec<Token>, nom::Err<nom::error::Error<&str>>> {
+fn lex_tokens_in_line(input: &str) -> IResult<&str, Vec<Token>> {
+    let (input, line) = is_not("\n")(input)?;
     alt((
         comment_line,
-        empty_line,
         many1(delimited(multispace0, lex_token, multispace0)),
-    ))(input)
+    ))(line)
     .map(|(remain, token)| {
         assert!(remain.is_empty());
-        token
+        (input, token)
     })
 }
 
 pub fn lex_tokens(input: &str) -> Result<Vec<Token>, nom::Err<nom::error::Error<&str>>> {
-    let mut tokens = Vec::new();
-    for line in input.split('\n') {
-        let mut token = lex_tokens_in_line(line)?;
-        tokens.append(&mut token)
-    }
-    Ok(tokens)
-}
-
-#[test]
-fn test() {
-    dbg!(many0(delimited(multispace0, lex_token, multispace0))(
-        &" MODULE  main "
-    ));
-    dbg!(lex_tokens_in_line(&" MODULE  main "));
+    many0(delimited(multispace0, lex_tokens_in_line, multispace0))(input).map(|(remain, token)| {
+        assert!(remain.is_empty());
+        token.concat()
+    })
 }

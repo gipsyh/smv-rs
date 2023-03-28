@@ -145,7 +145,7 @@ INVAR
 TRANS
  case
 _process_selector_.2 : !_process_selector_.0;
-TRUE : (__expr4 | !_process_selector_.0);
+TRUE : (!_process_selector_.1 | !_process_selector_.0);
 esac
 
 TRANS
