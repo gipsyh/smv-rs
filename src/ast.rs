@@ -2,6 +2,7 @@
 pub enum Prefix {
     Not,
     Next,
+    LtlGlobally,
 }
 
 #[derive(PartialEq, Debug, Clone)]

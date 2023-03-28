@@ -78,6 +78,7 @@ tag_token!(latch_var_tag, Token::LatchVar);
 tag_token!(input_var_tag, Token::InputVar);
 tag_token!(init_tag, Token::Init);
 tag_token!(trans_tag, Token::Trans);
+tag_token!(ltlspec_tag, Token::LtlSpec);
 tag_token!(becomes_tag, Token::Becomes);
 tag_token!(not_tag, Token::Not);
 tag_token!(and_tag, Token::And);
@@ -91,6 +92,7 @@ tag_token!(colon_tag, Token::Colon);
 tag_token!(semicolon_tag, Token::SemiColon);
 tag_token!(boolean_tag, Token::Boolean);
 tag_token!(next_tag, Token::Next);
+tag_token!(ltl_globally_tag, Token::LtlGlobally);
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(C)]

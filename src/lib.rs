@@ -30,6 +30,7 @@ pub struct SMV {
     pub latchs: Vec<Latch>,
     pub inits: Vec<Expr>,
     pub trans: Vec<Expr>,
+    pub ltlspecs: Vec<Expr>,
 }
 
 impl SMV {
@@ -65,5 +66,6 @@ impl AddAssign for SMV {
         self.latchs.extend(rhs.latchs);
         self.inits.extend(rhs.inits);
         self.trans.extend(rhs.trans);
+        self.ltlspecs.extend(rhs.ltlspecs);
     }
 }

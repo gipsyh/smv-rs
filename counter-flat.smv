@@ -43,8 +43,8 @@ TRANS
 
 
 
--- CTLSPEC
--- AG !(bit1.value & bit2.value)
+LTLSPEC
+G !(bit1.value & bit2.value)
 
 -- Symbols introduced by the dumper:
 DEFINE __expr2 := (next(bit1.value) <-> __expr0) ;

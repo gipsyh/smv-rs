@@ -1,10 +1,6 @@
 use crate::{
     ast::{Expr, Infix, Prefix},
-    token::{
-        and_tag, becomes_tag, boolean_tag, colon_tag, conditional_tag, define_tag, iff_tag,
-        imply_tag, init_tag, latch_var_tag, lparen_tag, module_tag, next_tag, not_tag, or_tag,
-        rparen_tag, semicolon_tag, trans_tag, Token, Tokens,
-    },
+    token::*,
     Define, Latch, SMV,
 };
 use nom::{
@@ -62,12 +58,13 @@ fn parse_paren_expr(input: Tokens) -> IResult<Tokens, Expr> {
 }
 
 fn parse_prefix_expr(input: Tokens) -> IResult<Tokens, Expr> {
-    let (i1, t1) = alt((not_tag, next_tag))(input)?;
+    let (i1, t1) = alt((not_tag, next_tag, ltl_globally_tag))(input)?;
     assert!(!t1.tok.is_empty());
     let (i2, e) = parse_atom_expr(i1)?;
     match t1.tok[0] {
         Token::Not => Ok((i2, Expr::PrefixExpr(Prefix::Not, Box::new(e)))),
         Token::Next => Ok((i2, Expr::PrefixExpr(Prefix::Next, Box::new(e)))),
+        Token::LtlGlobally => Ok((i2, Expr::PrefixExpr(Prefix::LtlGlobally, Box::new(e)))),
         _ => Err(nom::Err::Error(error_position!(input, ErrorKind::Tag))),
     }
 }
@@ -188,13 +185,32 @@ fn parse_trans(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
+fn parse_ltlspecs(input: Tokens) -> IResult<Tokens, SMV> {
+    let (i1, _) = ltlspec_tag(input)?;
+    many0(parse_expr)(i1).map(|(input, ltlspecs)| {
+        (
+            input,
+            SMV {
+                ltlspecs,
+                ..Default::default()
+            },
+        )
+    })
+}
+
 pub fn parse_tokens(input: Tokens) -> Result<SMV, nom::Err<nom::error::Error<Tokens<'_>>>> {
     let (input, _) = module_tag(input)?;
     let (input, ident) = parse_ident(input)?;
     if ident != "main".to_string() {
         return Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)));
     }
-    let (input, smvs) = many0(alt((parse_inits, parse_latchs, parse_defines, parse_trans)))(input)?;
+    let (input, smvs) = many0(alt((
+        parse_inits,
+        parse_latchs,
+        parse_defines,
+        parse_trans,
+        parse_ltlspecs,
+    )))(input)?;
     // assert!(input.tok.is_empty());
     dbg!(input);
     let smv = smvs.into_iter().fold(SMV::default(), |sum, smv| sum + smv);
