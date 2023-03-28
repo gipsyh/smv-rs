@@ -9,7 +9,6 @@ use std::{
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Token {
-    Illegal,
     EOF,
     // identifier and literals
     Ident(String),
@@ -78,10 +77,13 @@ tag_token!(define_tag, Token::Define);
 tag_token!(latch_var_tag, Token::LatchVar);
 tag_token!(input_var_tag, Token::InputVar);
 tag_token!(init_tag, Token::Init);
+tag_token!(trans_tag, Token::Trans);
 tag_token!(becomes_tag, Token::Becomes);
 tag_token!(not_tag, Token::Not);
 tag_token!(and_tag, Token::And);
 tag_token!(or_tag, Token::Or);
+tag_token!(imply_tag, Token::Imply);
+tag_token!(iff_tag, Token::Iff);
 tag_token!(lparen_tag, Token::LParen);
 tag_token!(rparen_tag, Token::RParen);
 tag_token!(conditional_tag, Token::Conditional);

@@ -1,20 +1,20 @@
-#[derive(PartialEq, Debug, Eq, Clone)]
-pub struct Ident(pub String);
-
 #[derive(PartialEq, Debug, Clone)]
 pub enum Prefix {
     Not,
+    Next,
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Infix {
     And,
     Or,
+    Imply,
+    Iff,
 }
 
 #[derive(Debug)]
 pub enum Expr {
-    Ident(Ident),
+    Ident(String),
     PrefixExpr(Prefix, Box<Expr>),
     InfixExpr(Infix, Box<Expr>, Box<Expr>),
     ConditionalExpr {

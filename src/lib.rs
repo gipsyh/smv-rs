@@ -4,7 +4,7 @@ mod parser;
 mod token;
 
 use crate::{parser::parse_tokens, token::Tokens};
-use ast::{Expr, Ident};
+use ast::Expr;
 use lexer::lex_tokens;
 use std::{
     fs::read_to_string,
@@ -15,25 +15,21 @@ use std::{
 
 #[derive(Debug)]
 pub struct Define {
-    pub ident: Ident,
+    pub ident: String,
     pub expr: Expr,
 }
 
 #[derive(Debug)]
 pub struct Latch {
-    pub ident: Ident,
-}
-
-#[derive(Debug)]
-pub struct Init {
-    pub expr: Expr,
+    pub ident: String,
 }
 
 #[derive(Default, Debug)]
 pub struct SMV {
     pub defines: Vec<Define>,
     pub latchs: Vec<Latch>,
-    pub inits: Vec<Init>,
+    pub inits: Vec<Expr>,
+    pub trans: Vec<Expr>,
 }
 
 impl SMV {
@@ -68,5 +64,6 @@ impl AddAssign for SMV {
         self.defines.extend(rhs.defines);
         self.latchs.extend(rhs.latchs);
         self.inits.extend(rhs.inits);
+        self.trans.extend(rhs.trans);
     }
 }
