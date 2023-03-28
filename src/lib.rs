@@ -24,30 +24,31 @@ pub struct Latch {
     pub ident: String,
 }
 
+#[derive(Debug)]
+pub struct Input {
+    pub ident: String,
+}
+
 #[derive(Default, Debug)]
 pub struct SMV {
     pub defines: Vec<Define>,
     pub latchs: Vec<Latch>,
+    pub inputs: Vec<Input>,
     pub inits: Vec<Expr>,
     pub trans: Vec<Expr>,
     pub ltlspecs: Vec<Expr>,
 }
 
 impl SMV {
-    fn parse(input: &str) -> Result<(), nom::Err<nom::error::Error<&str>>> {
-        let tokens = lex_tokens(input)?;
+    fn parse(input: &str) -> Self {
+        let tokens = lex_tokens(input).unwrap();
         let tokens = Tokens::new(&tokens);
-        dbg!(tokens);
-        parse_tokens(tokens);
-        Ok(())
+        parse_tokens(tokens).unwrap()
     }
 
     pub fn from_file<P: AsRef<Path>>(file: P) -> io::Result<Self> {
         let s = read_to_string(file)?;
-        Self::parse(&s).unwrap();
-        Ok(Self {
-            ..Default::default()
-        })
+        Ok(Self::parse(&s))
     }
 }
 
@@ -64,6 +65,7 @@ impl AddAssign for SMV {
     fn add_assign(&mut self, rhs: Self) {
         self.defines.extend(rhs.defines);
         self.latchs.extend(rhs.latchs);
+        self.inputs.extend(rhs.inputs);
         self.inits.extend(rhs.inits);
         self.trans.extend(rhs.trans);
         self.ltlspecs.extend(rhs.ltlspecs);

@@ -66,8 +66,11 @@ pub enum Token {
 
 macro_rules! tag_token (
     ($func_name:ident, $tag: expr) => (
-        pub fn $func_name(tokens: Tokens) -> IResult<Tokens, Tokens> {
-            verify(take(1usize), |t: &Tokens| t.tok[0] == $tag)(tokens)
+        pub fn $func_name(tokens: Tokens) -> IResult<Tokens, Token> {
+            verify(take(1usize), |t: &Tokens| t.tok[0] == $tag)(tokens).map(|(tokens, ret)| {
+                assert!(ret.tok.len() == 1);
+                (tokens, ret.tok[0].clone())
+            })
         }
     )
   );
@@ -85,6 +88,8 @@ tag_token!(and_tag, Token::And);
 tag_token!(or_tag, Token::Or);
 tag_token!(imply_tag, Token::Imply);
 tag_token!(iff_tag, Token::Iff);
+tag_token!(case_tag, Token::Case);
+tag_token!(esac_tag, Token::Esac);
 tag_token!(lparen_tag, Token::LParen);
 tag_token!(rparen_tag, Token::RParen);
 tag_token!(conditional_tag, Token::Conditional);
@@ -93,6 +98,9 @@ tag_token!(semicolon_tag, Token::SemiColon);
 tag_token!(boolean_tag, Token::Boolean);
 tag_token!(next_tag, Token::Next);
 tag_token!(ltl_globally_tag, Token::LtlGlobally);
+tag_token!(ltl_finally_tag, Token::LtlFinally);
+tag_token!(ltl_next_tag, Token::LtlNext);
+tag_token!(ltl_once_tag, Token::LtlOnce);
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(C)]

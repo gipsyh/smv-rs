@@ -1,5 +1,9 @@
 use smv::SMV;
 
 fn main() {
-    SMV::from_file("./counter-flat.smv");
+    // let smv = SMV::from_file("./examples/counter-flat.smv").unwrap();
+    let smv =
+        SMV::from_file("../MC-Benchmark/NuSMV-2.6-examples/example_cmu/dme1-flat.smv").unwrap();
+    dbg!(&smv);
+    println!("{}", smv.ltlspecs[0]);
 }

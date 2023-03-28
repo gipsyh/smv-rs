@@ -105,6 +105,7 @@ fn lex_reserved_ident(input: &str) -> IResult<&str, Token> {
             "G" => Token::LtlGlobally,
             "U" => Token::LtlUntil,
             "X" => Token::LtlNext,
+            "O" => Token::LtlOnce,
             _ => Token::Ident(s.to_string()),
         },
     )(input)
@@ -130,6 +131,7 @@ fn lex_tokens_in_line(input: &str) -> IResult<&str, Vec<Token>> {
         many1(delimited(multispace0, lex_token, multispace0)),
     ))(line)
     .map(|(remain, token)| {
+        dbg!(remain);
         assert!(remain.is_empty());
         (input, token)
     })
