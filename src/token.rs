@@ -9,7 +9,6 @@ use std::{
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Token {
-    EOF,
     // identifier and literals
     Ident(String),
     IntLiteral(i64),
@@ -58,10 +57,6 @@ pub enum Token {
     SemiColon,
     LParen,
     RParen,
-    // LBrace,
-    // RBrace,
-    // LBracket,
-    // RBracket,
 }
 
 macro_rules! tag_token (
@@ -101,6 +96,7 @@ tag_token!(ltl_globally_tag, Token::LtlGlobally);
 tag_token!(ltl_finally_tag, Token::LtlFinally);
 tag_token!(ltl_next_tag, Token::LtlNext);
 tag_token!(ltl_once_tag, Token::LtlOnce);
+tag_token!(ltl_until_tag, Token::LtlUntil);
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(C)]

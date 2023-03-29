@@ -33,6 +33,7 @@ pub enum Infix {
     Or,
     Imply,
     Iff,
+    LtlUntil,
 }
 
 impl Display for Infix {
@@ -42,12 +43,13 @@ impl Display for Infix {
             Infix::Or => "|",
             Infix::Imply => "->",
             Infix::Iff => "<->",
+            Infix::LtlUntil => "U",
         };
         write!(f, "{}", display)
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct CaseExpr {
     pub branchs: Vec<(Expr, Expr)>,
 }
@@ -64,7 +66,7 @@ impl Display for CaseExpr {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Expr {
     Ident(String),
     LitExpr(bool),

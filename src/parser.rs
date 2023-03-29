@@ -21,10 +21,11 @@ pub enum Precedence {
     POr,
     PImply,
     PIff,
+    PLtlUntil,
 }
 
 fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
-    let (input, op) = alt((and_tag, or_tag, imply_tag, iff_tag))(input)?;
+    let (input, op) = alt((and_tag, or_tag, imply_tag, iff_tag, ltl_until_tag))(input)?;
     Ok((
         input,
         match op {
@@ -32,6 +33,7 @@ fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
             Token::Or => (Precedence::POr, Infix::Or),
             Token::Imply => (Precedence::PImply, Infix::Imply),
             Token::Iff => (Precedence::PIff, Infix::Iff),
+            Token::LtlUntil => (Precedence::PLtlUntil, Infix::LtlUntil),
             _ => panic!(),
         },
     ))
@@ -164,7 +166,7 @@ fn parse_expr(input: Tokens) -> IResult<Tokens, Expr> {
 fn parse_define(input: Tokens) -> IResult<Tokens, Define> {
     let (i1, (ident, _, expr, _)) =
         tuple((parse_ident, becomes_tag, parse_expr, semicolon_tag))(input)?;
-    Ok((i1, Define { ident, expr }))
+    Ok((i1, Define { ident, expr, flatten: false }))
 }
 
 fn parse_defines(input: Tokens) -> IResult<Tokens, SMV> {
