@@ -12,7 +12,7 @@ use std::str::FromStr;
 
 macro_rules! syntax {
     ($func_name: ident, $tag_string: literal, $output_token: expr) => {
-        fn $func_name<'a>(s: &'a str) -> IResult<&str, Token> {
+        fn $func_name(s: &str) -> IResult<&str, Token> {
             map(tag($tag_string), |_| $output_token)(s)
         }
     };

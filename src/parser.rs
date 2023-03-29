@@ -16,13 +16,13 @@ use nom::{
 
 #[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub enum Precedence {
-    PLowest,
-    PAnd,
-    POr,
-    PImply,
-    PIff,
-    PLtlUntil,
-    PLtlSince,
+    Lowest,
+    And,
+    Or,
+    Imply,
+    Iff,
+    LtlUntil,
+    LtlSince,
 }
 
 fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
@@ -37,12 +37,12 @@ fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
     Ok((
         input,
         match op {
-            Token::And => (Precedence::PAnd, Infix::And),
-            Token::Or => (Precedence::POr, Infix::Or),
-            Token::Imply => (Precedence::PImply, Infix::Imply),
-            Token::Iff => (Precedence::PIff, Infix::Iff),
-            Token::LtlUntil => (Precedence::PLtlUntil, Infix::LtlUntil),
-            Token::LtlSince => (Precedence::PLtlSince, Infix::LtlSince),
+            Token::And => (Precedence::And, Infix::And),
+            Token::Or => (Precedence::Or, Infix::Or),
+            Token::Imply => (Precedence::Imply, Infix::Imply),
+            Token::Iff => (Precedence::Iff, Infix::Iff),
+            Token::LtlUntil => (Precedence::LtlUntil, Infix::LtlUntil),
+            Token::LtlSince => (Precedence::LtlSince, Infix::LtlSince),
             _ => panic!(),
         },
     ))
@@ -54,7 +54,7 @@ fn parse_ident(input: Tokens) -> IResult<Tokens, String> {
         Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)))
     } else {
         match t1.tok[0].clone() {
-            Token::Ident(name) => Ok((i1, name.replace(".", "_"))),
+            Token::Ident(name) => Ok((i1, name.replace('.', "_"))),
             _ => Err(nom::Err::Error(Error::new(input, ErrorKind::Tag))),
         }
     }
@@ -115,10 +115,10 @@ fn parse_prefix_expr(input: Tokens) -> IResult<Tokens, Expr> {
     }
 }
 
-fn parse_conditional_expr(input: Tokens) -> IResult<Tokens, Expr> {
+fn _parse_conditional_expr(input: Tokens) -> IResult<Tokens, Expr> {
     let (i1, (cond, _, yes, _, no)) = tuple((
         parse_atom_expr,
-        conditional_tag,
+        _conditional_tag,
         parse_atom_expr,
         colon_tag,
         parse_atom_expr,
@@ -169,7 +169,7 @@ fn parse_pratt_expr(input: Tokens, precedence: Precedence) -> IResult<Tokens, Ex
 }
 
 fn parse_expr(input: Tokens) -> IResult<Tokens, Expr> {
-    parse_pratt_expr(input, Precedence::PLowest)
+    parse_pratt_expr(input, Precedence::Lowest)
 }
 
 fn parse_define(input: Tokens) -> IResult<Tokens, Define> {
@@ -285,7 +285,7 @@ fn parse_ltlspecs(input: Tokens) -> IResult<Tokens, SMV> {
 pub fn parse_tokens(input: Tokens) -> Result<SMV, nom::Err<nom::error::Error<Tokens<'_>>>> {
     let (input, _) = module_tag(input)?;
     let (input, ident) = parse_ident(input)?;
-    if ident != "main".to_string() {
+    if ident != *"main" {
         return Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)));
     }
     dbg!(input);

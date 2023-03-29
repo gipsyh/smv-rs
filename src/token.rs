@@ -89,7 +89,7 @@ tag_token!(case_tag, Token::Case);
 tag_token!(esac_tag, Token::Esac);
 tag_token!(lparen_tag, Token::LParen);
 tag_token!(rparen_tag, Token::RParen);
-tag_token!(conditional_tag, Token::Conditional);
+tag_token!(_conditional_tag, Token::Conditional);
 tag_token!(colon_tag, Token::Colon);
 tag_token!(semicolon_tag, Token::SemiColon);
 tag_token!(boolean_tag, Token::Boolean);
