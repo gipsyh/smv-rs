@@ -1,7 +1,7 @@
 use crate::{
     ast::{CaseExpr, Expr, Infix, Prefix},
     token::*,
-    Define, Input, Latch, SMV,
+    Define, Var, SMV,
 };
 use nom::{
     branch::alt,
@@ -22,10 +22,18 @@ pub enum Precedence {
     PImply,
     PIff,
     PLtlUntil,
+    PLtlSince,
 }
 
 fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
-    let (input, op) = alt((and_tag, or_tag, imply_tag, iff_tag, ltl_until_tag))(input)?;
+    let (input, op) = alt((
+        and_tag,
+        or_tag,
+        imply_tag,
+        iff_tag,
+        ltl_until_tag,
+        ltl_since_tag,
+    ))(input)?;
     Ok((
         input,
         match op {
@@ -34,6 +42,7 @@ fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
             Token::Imply => (Precedence::PImply, Infix::Imply),
             Token::Iff => (Precedence::PIff, Infix::Iff),
             Token::LtlUntil => (Precedence::PLtlUntil, Infix::LtlUntil),
+            Token::LtlSince => (Precedence::PLtlSince, Infix::LtlSince),
             _ => panic!(),
         },
     ))
@@ -166,7 +175,14 @@ fn parse_expr(input: Tokens) -> IResult<Tokens, Expr> {
 fn parse_define(input: Tokens) -> IResult<Tokens, Define> {
     let (i1, (ident, _, expr, _)) =
         tuple((parse_ident, becomes_tag, parse_expr, semicolon_tag))(input)?;
-    Ok((i1, Define { ident, expr, flatten: false }))
+    Ok((
+        i1,
+        Define {
+            ident,
+            expr,
+            flatten: false,
+        },
+    ))
 }
 
 fn parse_defines(input: Tokens) -> IResult<Tokens, SMV> {
@@ -182,38 +198,19 @@ fn parse_defines(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-fn parse_latch(input: Tokens) -> IResult<Tokens, Latch> {
+fn parse_var(input: Tokens) -> IResult<Tokens, Var> {
     let (i1, (ident, _, _, _)) =
         tuple((parse_ident, colon_tag, boolean_tag, semicolon_tag))(input)?;
-    Ok((i1, Latch { ident }))
+    Ok((i1, Var { ident }))
 }
 
-fn parse_input(input: Tokens) -> IResult<Tokens, Input> {
-    let (i1, (ident, _, _, _)) =
-        tuple((parse_ident, colon_tag, boolean_tag, semicolon_tag))(input)?;
-    Ok((i1, Input { ident }))
-}
-
-fn parse_latchs(input: Tokens) -> IResult<Tokens, SMV> {
-    let (i1, _) = latch_var_tag(input)?;
-    many0(parse_latch)(i1).map(|(tokens, latchs)| {
+fn parse_vars(input: Tokens) -> IResult<Tokens, SMV> {
+    let (i1, _) = alt((latch_var_tag, input_var_tag))(input)?;
+    many0(parse_var)(i1).map(|(tokens, vars)| {
         (
             tokens,
             SMV {
-                latchs,
-                ..Default::default()
-            },
-        )
-    })
-}
-
-fn parse_inputs(input: Tokens) -> IResult<Tokens, SMV> {
-    let (i1, _) = input_var_tag(input)?;
-    many0(parse_input)(i1).map(|(tokens, inputs)| {
-        (
-            tokens,
-            SMV {
-                inputs,
+                vars,
                 ..Default::default()
             },
         )
@@ -246,6 +243,32 @@ fn parse_trans(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
+fn parse_invariant(input: Tokens) -> IResult<Tokens, SMV> {
+    let (i1, _) = invariant_tag(input)?;
+    many0(parse_expr)(i1).map(|(input, invariants)| {
+        (
+            input,
+            SMV {
+                invariants,
+                ..Default::default()
+            },
+        )
+    })
+}
+
+fn parse_fairness(input: Tokens) -> IResult<Tokens, SMV> {
+    let (i1, _) = fairness_tag(input)?;
+    many0(parse_expr)(i1).map(|(input, fairness)| {
+        (
+            input,
+            SMV {
+                fairness,
+                ..Default::default()
+            },
+        )
+    })
+}
+
 fn parse_ltlspecs(input: Tokens) -> IResult<Tokens, SMV> {
     let (i1, _) = ltlspec_tag(input)?;
     many0(parse_expr)(i1).map(|(input, ltlspecs)| {
@@ -265,16 +288,18 @@ pub fn parse_tokens(input: Tokens) -> Result<SMV, nom::Err<nom::error::Error<Tok
     if ident != "main".to_string() {
         return Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)));
     }
+    dbg!(input);
     let (input, smvs) = many0(alt((
         parse_inits,
-        parse_latchs,
-        parse_inputs,
+        parse_vars,
         parse_defines,
         parse_trans,
+        parse_invariant,
+        parse_fairness,
         parse_ltlspecs,
     )))(input)?;
-    assert!(input.tok.is_empty());
     dbg!(input);
+    assert!(input.tok.is_empty());
     let smv = smvs.into_iter().fold(SMV::default(), |sum, smv| sum + smv);
     Ok(smv)
 }

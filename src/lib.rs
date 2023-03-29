@@ -21,22 +21,18 @@ pub struct Define {
 }
 
 #[derive(Debug)]
-pub struct Latch {
-    pub ident: String,
-}
-
-#[derive(Debug)]
-pub struct Input {
+pub struct Var {
     pub ident: String,
 }
 
 #[derive(Default, Debug)]
 pub struct SMV {
     pub defines: Vec<Define>,
-    pub latchs: Vec<Latch>,
-    pub inputs: Vec<Input>,
+    pub vars: Vec<Var>,
     pub inits: Vec<Expr>,
     pub trans: Vec<Expr>,
+    pub invariants: Vec<Expr>,
+    pub fairness: Vec<Expr>,
     pub ltlspecs: Vec<Expr>,
 }
 
@@ -55,13 +51,8 @@ impl SMV {
                         return self.defines[i].expr.clone();
                     }
                 }
-                for latch in self.latchs.iter() {
+                for latch in self.vars.iter() {
                     if latch.ident == ident {
-                        return Expr::Ident(ident);
-                    }
-                }
-                for input in self.inputs.iter() {
-                    if input.ident == ident {
                         return Expr::Ident(ident);
                     }
                 }
@@ -101,6 +92,12 @@ impl SMV {
         for i in 0..self.trans.len() {
             self.trans[i] = self.flatten_expr(self.trans[i].clone());
         }
+        for i in 0..self.invariants.len() {
+            self.invariants[i] = self.flatten_expr(self.invariants[i].clone());
+        }
+        for i in 0..self.fairness.len() {
+            self.fairness[i] = self.flatten_expr(self.fairness[i].clone());
+        }
         for i in 0..self.ltlspecs.len() {
             self.ltlspecs[i] = self.flatten_expr(self.ltlspecs[i].clone());
         }
@@ -134,10 +131,11 @@ impl Add for SMV {
 impl AddAssign for SMV {
     fn add_assign(&mut self, rhs: Self) {
         self.defines.extend(rhs.defines);
-        self.latchs.extend(rhs.latchs);
-        self.inputs.extend(rhs.inputs);
+        self.vars.extend(rhs.vars);
         self.inits.extend(rhs.inits);
         self.trans.extend(rhs.trans);
+        self.invariants.extend(rhs.invariants);
+        self.fairness.extend(rhs.fairness);
         self.ltlspecs.extend(rhs.ltlspecs);
     }
 }

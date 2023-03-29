@@ -25,17 +25,6 @@ syntax! {becomes_operator, ":=", Token::Becomes}
 syntax! {not_operator, "!", Token::Not}
 syntax! {iff_operator, "<->", Token::Iff}
 syntax! {imply_operator, "->", Token::Imply}
-// syntax! {ltl_finally_operator, "F", Token::LtlFinally}
-// syntax! {ltl_globally_operator, "G", Token::LtlGlobally}
-// syntax! {ltl_historically_operator, "H", Token::LtlHistorically}
-// syntax! {ltl_once_operator, "O", Token::LtlOnce}
-// syntax! {ltl_since_operator, "S", Token::LtlSince}
-// syntax! {ltl_triggered_operator, "T", Token::LtlTriggered}
-// syntax! {ltl_until_operator, "U", Token::LtlUntil}
-// syntax! {ltl_release_operator, "R", Token::LtlReleases}
-// syntax! {ltl_next_operator, "X", Token::LtlNext}
-// syntax! {ltl_yesterday_operator, "Y", Token::LtlNext}
-// syntax! {ltl_weaky_yesterday_operator, "Z", Token::LtlWeakyesterday}
 
 pub fn lex_operator(input: &str) -> IResult<&str, Token> {
     alt((
@@ -106,6 +95,7 @@ fn lex_reserved_ident(input: &str) -> IResult<&str, Token> {
             "U" => Token::LtlUntil,
             "X" => Token::LtlNext,
             "O" => Token::LtlOnce,
+            "S" => Token::LtlSince,
             _ => Token::Ident(s.to_string()),
         },
     )(input)
@@ -131,7 +121,6 @@ fn lex_tokens_in_line(input: &str) -> IResult<&str, Vec<Token>> {
         many1(delimited(multispace0, lex_token, multispace0)),
     ))(line)
     .map(|(remain, token)| {
-        dbg!(remain);
         assert!(remain.is_empty());
         (input, token)
     })

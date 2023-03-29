@@ -135,715 +135,714 @@ INIT
  !r2s_out.tag.0
 
 
--- INVAR
---  (__expr0 | !sender.state.0)
+INVAR
+ (__expr0 | !sender.state.0)
 
--- INVAR
---  (__expr2 | !receiver.state.0)
-
-
--- TRANS
---  case
--- _process_selector_.2 : !_process_selector_.0;
--- TRUE : (!_process_selector_.1 | !_process_selector_.0);
--- esac
-
--- TRANS
---  __expr18
-
--- TRANS
---  __expr19
-
--- TRANS
---  __expr28
-
--- TRANS
---  __expr36
-
--- TRANS
---  __expr60
-
--- TRANS
---  __expr69
-
--- TRANS
---  __expr18
-
--- TRANS
---  __expr19
-
--- TRANS
---  __expr28
-
--- TRANS
---  __expr76
-
--- TRANS
---  __expr100
-
--- TRANS
---  __expr36
-
--- TRANS
---  __expr60
-
--- TRANS
---  __expr110
-
--- TRANS
---  __expr134
-
--- TRANS
---  __expr76
-
--- TRANS
---  __expr100
-
--- TRANS
---  __expr135
-
--- TRANS
---  __expr140
-
--- TRANS
---  __expr110
-
--- TRANS
---  __expr135
-
--- TRANS
---  __expr134
-
--- TRANS
---  __expr140
-
--- TRANS
---  __expr69
+INVAR
+ (__expr2 | !receiver.state.0)
 
 
--- FAIRNESS
---  __expr5
+TRANS
+ case
+_process_selector_.2 : !_process_selector_.0;
+TRUE : (!_process_selector_.1 | !_process_selector_.0);
+esac
+
+TRANS
+ __expr18
+
+TRANS
+ __expr19
+
+TRANS
+ __expr28
+
+TRANS
+ __expr36
+
+TRANS
+ __expr60
+
+TRANS
+ __expr69
+
+TRANS
+ __expr18
+
+TRANS
+ __expr19
+
+TRANS
+ __expr28
+
+TRANS
+ __expr76
+
+TRANS
+ __expr100
+
+TRANS
+ __expr36
+
+TRANS
+ __expr60
+
+TRANS
+ __expr110
+
+TRANS
+ __expr134
+
+TRANS
+ __expr76
+
+TRANS
+ __expr100
+
+TRANS
+ __expr135
+
+TRANS
+ __expr140
+
+TRANS
+ __expr110
+
+TRANS
+ __expr135
+
+TRANS
+ __expr134
+
+TRANS
+ __expr140
+
+TRANS
+ __expr69
 
 
--- FAIRNESS
---  __expr74
+FAIRNESS
+ __expr5
 
 
--- FAIRNESS
---  __expr61
+FAIRNESS
+ __expr74
 
 
--- FAIRNESS
---  (__expr13 | __expr14)
+FAIRNESS
+ __expr61
 
 
--- FAIRNESS
---  __expr29
+FAIRNESS
+ (__expr13 | __expr14)
 
 
--- FAIRNESS
---  (__expr101 | __expr102)
+FAIRNESS
+ __expr29
+
+
+FAIRNESS
+ (__expr101 | __expr102)
 
 
 
--- LTLSPEC
---  G (__expr141 |  X ((__expr6 U __expr141) U __expr15))
--- -- G((!((!(sender.state.1) & !(sender.state.0))) | X((((!(sender.state.1) & !(sender.state.0)) U !((!(sender.state.1) & !(sender.state.0)))) U ((!(sender.state.1) & sender.state.0) & ((!(sender.abp) & (r2s_out.tag.1 & !(r2s_out.tag.0))) | (sender.abp & (!(r2s_out.tag.1) & r2s_out.tag.0))))))))
-
- 
+LTLSPEC
+G (__expr141 |  X ((__expr6 U __expr141) U __expr15))
+LTLSPEC
+G((!((!(sender.state.1) & !(sender.state.0))) | X((((!(sender.state.1) & !(sender.state.0)) U !((!(sender.state.1) & !(sender.state.0)))) U ((!(sender.state.1) & sender.state.0) & ((!(sender.abp) & (r2s_out.tag.1 & !(r2s_out.tag.0))) | (sender.abp & (!(r2s_out.tag.1) & r2s_out.tag.0))))))))
 
 -- -- Symbols introduced by the dumper:
--- DEFINE __expr132 := case
--- receiver.data.6 : (next(receiver.data.6) & __expr131);
--- TRUE : (__expr123 & __expr131);
--- esac ;
+DEFINE __expr132 := case
+receiver.data.6 : (next(receiver.data.6) & __expr131);
+TRUE : (__expr123 & __expr131);
+esac ;
 
--- DEFINE __expr69 := case
--- __expr61 : case
--- __expr64 : case
--- r2s_in.tag.1 : (next(r2s_out.tag.1) & (!r2s_in.tag.0 | next(r2s_out.tag.0)));
--- (next(r2s_out.tag.1) | r2s_in.tag.0) : next(r2s_out.tag.0);
--- TRUE : __expr65;
--- esac;
--- TRUE : __expr68;
--- esac;
--- __expr5 : case
--- __expr12 : (__expr67 & __expr65);
--- TRUE : __expr68;
--- esac;
--- TRUE : __expr68;
--- esac ;
+DEFINE __expr69 := case
+__expr61 : case
+__expr64 : case
+r2s_in.tag.1 : (next(r2s_out.tag.1) & (!r2s_in.tag.0 | next(r2s_out.tag.0)));
+(next(r2s_out.tag.1) | r2s_in.tag.0) : next(r2s_out.tag.0);
+TRUE : __expr65;
+esac;
+TRUE : __expr68;
+esac;
+__expr5 : case
+__expr12 : (__expr67 & __expr65);
+TRUE : __expr68;
+esac;
+TRUE : __expr68;
+esac ;
 
--- DEFINE __expr80 := case
--- s2r_in.data.1 : (next(s2r_out.data.1) & __expr78);
--- TRUE : (__expr79 & __expr78);
--- esac ;
+DEFINE __expr80 := case
+s2r_in.data.1 : (next(s2r_out.data.1) & __expr78);
+TRUE : (__expr79 & __expr78);
+esac ;
 
--- DEFINE __expr68 := case
--- r2s_out.tag.1 : (next(r2s_out.tag.1) & __expr66);
--- TRUE : (__expr67 & __expr66);
--- esac ;
+DEFINE __expr68 := case
+r2s_out.tag.1 : (next(r2s_out.tag.1) & __expr66);
+TRUE : (__expr67 & __expr66);
+esac ;
 
--- DEFINE __expr103 := (__expr75 & ((__expr3 & __expr101) | (receiver.abp & __expr102))) ;
+DEFINE __expr103 := (__expr75 & ((__expr3 & __expr101) | (receiver.abp & __expr102))) ;
 
--- DEFINE __expr0 := !sender.state.1 ;
+DEFINE __expr0 := !sender.state.1 ;
 
--- DEFINE __expr92 := case
--- s2r_out.data.0 : next(s2r_out.data.0);
--- TRUE : __expr77;
--- esac ;
+DEFINE __expr92 := case
+s2r_out.data.0 : next(s2r_out.data.0);
+TRUE : __expr77;
+esac ;
 
--- DEFINE __expr115 := !next(receiver.data.2) ;
+DEFINE __expr115 := !next(receiver.data.2) ;
 
--- DEFINE __expr34 := case
--- s2r_in.tag.0 : next(s2r_in.tag.0);
--- TRUE : __expr33;
--- esac ;
+DEFINE __expr34 := case
+s2r_in.tag.0 : next(s2r_in.tag.0);
+TRUE : __expr33;
+esac ;
 
--- DEFINE __expr79 := !next(s2r_out.data.1) ;
+DEFINE __expr79 := !next(s2r_out.data.1) ;
 
--- DEFINE __expr67 := !next(r2s_out.tag.1) ;
+DEFINE __expr67 := !next(r2s_out.tag.1) ;
 
--- DEFINE __expr11 := !__expr7 ;
+DEFINE __expr11 := !__expr7 ;
 
--- DEFINE __expr96 := case
--- s2r_out.data.4 : (next(s2r_out.data.4) & __expr95);
--- TRUE : (__expr85 & __expr95);
--- esac ;
-
--- DEFINE __expr48 := case
--- s2r_in.data.5 : (next(s2r_in.data.5) & __expr46);
--- TRUE : (__expr47 & __expr46);
--- esac ;
-
--- DEFINE __expr102 := (!s2r_out.tag.1 & s2r_out.tag.0) ;
+DEFINE __expr96 := case
+s2r_out.data.4 : (next(s2r_out.data.4) & __expr95);
+TRUE : (__expr85 & __expr95);
+esac ;
+
+DEFINE __expr48 := case
+s2r_in.data.5 : (next(s2r_in.data.5) & __expr46);
+TRUE : (__expr47 & __expr46);
+esac ;
+
+DEFINE __expr102 := (!s2r_out.tag.1 & s2r_out.tag.0) ;
 
--- DEFINE __expr30 := (!s2r_out.tag.1 & !s2r_out.tag.0) ;
-
--- DEFINE __expr47 := !next(s2r_in.data.5) ;
+DEFINE __expr30 := (!s2r_out.tag.1 & !s2r_out.tag.0) ;
+
+DEFINE __expr47 := !next(s2r_in.data.5) ;
 
--- DEFINE __expr26 := case
--- sender.data.6 : (next(sender.data.6) & __expr25);
--- TRUE : (!next(sender.data.6) & __expr25);
--- esac ;
-
--- DEFINE __expr120 := case
--- s2r_out.data.4 : (next(receiver.data.4) & __expr118);
--- TRUE : (__expr119 & __expr118);
--- esac ;
-
--- DEFINE __expr64 := (__expr17 & __expr63) ;
-
--- DEFINE __expr55 := case
--- sender.data.2 : (next(s2r_in.data.2) & __expr54);
--- TRUE : (__expr41 & __expr54);
--- esac ;
-
--- DEFINE __expr32 := !next(s2r_in.tag.1) ;
-
--- DEFINE __expr84 := case
--- s2r_in.data.3 : (next(s2r_out.data.3) & __expr82);
--- TRUE : (__expr83 & __expr82);
--- esac ;
+DEFINE __expr26 := case
+sender.data.6 : (next(sender.data.6) & __expr25);
+TRUE : (!next(sender.data.6) & __expr25);
+esac ;
+
+DEFINE __expr120 := case
+s2r_out.data.4 : (next(receiver.data.4) & __expr118);
+TRUE : (__expr119 & __expr118);
+esac ;
+
+DEFINE __expr64 := (__expr17 & __expr63) ;
+
+DEFINE __expr55 := case
+sender.data.2 : (next(s2r_in.data.2) & __expr54);
+TRUE : (__expr41 & __expr54);
+esac ;
+
+DEFINE __expr32 := !next(s2r_in.tag.1) ;
+
+DEFINE __expr84 := case
+s2r_in.data.3 : (next(s2r_out.data.3) & __expr82);
+TRUE : (__expr83 & __expr82);
+esac ;
 
--- DEFINE __expr71 := case
--- s2r_out.tag.0 : next(s2r_out.tag.0);
--- TRUE : __expr70;
--- esac ;
-
--- DEFINE __expr10 := (__expr9 & next(sender.state.0)) ;
-
--- DEFINE __expr3 := !receiver.abp ;
-
--- DEFINE __expr119 := !next(receiver.data.4) ;
-
--- DEFINE __expr59 := case
--- sender.data.6 : (next(s2r_in.data.6) & __expr58);
--- TRUE : (__expr49 & __expr58);
--- esac ;
-
--- DEFINE __expr1 := !sender.abp ;
-
--- DEFINE __expr38 := case
--- s2r_in.data.0 : next(s2r_in.data.0);
--- TRUE : __expr37;
--- esac ;
-
--- DEFINE __expr111 := !next(receiver.data.0) ;
-
--- DEFINE __expr129 := case
--- receiver.data.3 : (next(receiver.data.3) & __expr128);
--- TRUE : (__expr117 & __expr128);
--- esac ;
-
--- DEFINE __expr83 := !next(s2r_out.data.3) ;
-
--- DEFINE __expr52 := case
--- s2r_in.data.7 : (next(s2r_in.data.7) & __expr50);
--- TRUE : (__expr51 & __expr50);
--- esac ;
-
--- DEFINE __expr4 := !_process_selector_.1 ;
-
--- DEFINE __expr133 := case
--- receiver.data.7 : (next(receiver.data.7) & __expr132);
--- TRUE : (__expr125 & __expr132);
--- esac ;
-
--- DEFINE __expr108 := (__expr2 & receiver.state.0) ;
-
--- DEFINE __expr21 := case
--- sender.data.1 : (next(sender.data.1) & __expr20);
--- TRUE : (!next(sender.data.1) & __expr20);
--- esac ;
-
--- DEFINE __expr105 := (__expr104 & next(receiver.state.0)) ;
-
--- DEFINE __expr36 := case
--- __expr29 : case
--- __expr31 : (__expr32 & __expr33);
--- TRUE : __expr35;
--- esac;
--- __expr5 : case
--- __expr8 : case
--- sender.abp : (__expr32 & next(s2r_in.tag.0));
--- __expr1 : (next(s2r_in.tag.1) & __expr33);
--- esac;
--- TRUE : __expr35;
--- esac;
--- TRUE : __expr35;
--- esac ;
-
--- DEFINE __expr51 := !next(s2r_in.data.7) ;
-
--- DEFINE __expr124 := case
--- s2r_out.data.6 : (next(receiver.data.6) & __expr122);
--- TRUE : (__expr123 & __expr122);
--- esac ;
-
--- DEFINE __expr93 := case
--- s2r_out.data.1 : (next(s2r_out.data.1) & __expr92);
--- TRUE : (__expr79 & __expr92);
--- esac ;
-
--- DEFINE __expr35 := case
--- s2r_in.tag.1 : (next(s2r_in.tag.1) & __expr34);
--- TRUE : (__expr32 & __expr34);
--- esac ;
-
--- DEFINE __expr88 := case
--- s2r_in.data.5 : (next(s2r_out.data.5) & __expr86);
--- TRUE : (__expr87 & __expr86);
--- esac ;
-
--- DEFINE __expr7 := (!s2r_in.tag.1 & !s2r_in.tag.0) ;
-
--- DEFINE __expr97 := case
--- s2r_out.data.5 : (next(s2r_out.data.5) & __expr96);
--- TRUE : (__expr87 & __expr96);
--- esac ;
-
--- DEFINE __expr123 := !next(receiver.data.6) ;
-
--- DEFINE __expr42 := case
--- s2r_in.data.2 : (next(s2r_in.data.2) & __expr40);
--- TRUE : (__expr41 & __expr40);
--- esac ;
-
--- DEFINE __expr107 := case
--- receiver.state.1 : next(receiver.state.1);
--- TRUE : (__expr104 & case
--- receiver.state.0 : next(receiver.state.0);
--- TRUE : __expr106;
--- esac);
--- esac ;
-
--- DEFINE __expr87 := !next(s2r_out.data.5) ;
-
--- DEFINE __expr70 := !next(s2r_out.tag.0) ;
-
--- DEFINE __expr41 := !next(s2r_in.data.2) ;
-
--- DEFINE __expr23 := case
--- sender.data.3 : (next(sender.data.3) & __expr22);
--- TRUE : (!next(sender.data.3) & __expr22);
--- esac ;
-
--- DEFINE __expr114 := case
--- s2r_out.data.1 : (next(receiver.data.1) & __expr112);
--- TRUE : (__expr113 & __expr112);
--- esac ;
-
--- DEFINE __expr56 := case
--- sender.data.3 : (next(s2r_in.data.3) & __expr55);
--- TRUE : (__expr43 & __expr55);
--- esac ;
-
--- DEFINE __expr100 := case
--- __expr29 : case
--- __expr31 : case
--- s2r_in.data.7 : (next(s2r_out.data.7) & __expr90);
--- TRUE : (__expr91 & __expr90);
--- esac;
--- TRUE : __expr99;
--- esac;
--- TRUE : __expr99;
--- esac ;
-
--- DEFINE __expr29 := (_process_selector_.2 & __expr4) ;
-
--- DEFINE __expr126 := case
--- receiver.data.0 : next(receiver.data.0);
--- TRUE : __expr111;
--- esac ;
-
--- DEFINE __expr78 := case
--- s2r_in.data.0 : next(s2r_out.data.0);
--- TRUE : __expr77;
--- esac ;
-
--- DEFINE __expr66 := case
--- r2s_out.tag.0 : next(r2s_out.tag.0);
--- TRUE : __expr65;
--- esac ;
-
--- DEFINE __expr61 := (!_process_selector_.2 & _process_selector_.1) ;
-
--- DEFINE __expr110 := case
--- __expr74 : case
--- __expr103 : next(receiver.state.1);
--- (__expr75 & (((receiver.abp & __expr101) | (__expr3 & __expr102)) | (s2r_out.tag.1 & s2r_out.tag.0))) : __expr105;
--- (__expr75 & __expr30) : __expr107;
--- receiver.state.1 : __expr105;
--- __expr109 : (__expr104 & __expr106);
--- (__expr108 & __expr63) : __expr107;
--- esac;
--- TRUE : __expr107;
--- esac ;
-
--- DEFINE __expr113 := !next(receiver.data.1) ;
-
--- DEFINE __expr130 := case
--- receiver.data.4 : (next(receiver.data.4) & __expr129);
--- TRUE : (__expr119 & __expr129);
--- esac ;
-
--- DEFINE __expr137 := !next(r2s_in.tag.0) ;
-
--- DEFINE __expr46 := case
--- s2r_in.data.4 : (next(s2r_in.data.4) & __expr44);
--- TRUE : (__expr45 & __expr44);
--- esac ;
-
--- DEFINE __expr134 := case
--- __expr74 : case
--- __expr103 : case
--- s2r_out.data.7 : (next(receiver.data.7) & __expr124);
--- TRUE : (__expr125 & __expr124);
--- esac;
--- TRUE : __expr133;
--- esac;
--- TRUE : __expr133;
--- esac ;
-
--- DEFINE __expr91 := !next(s2r_out.data.7) ;
-
--- DEFINE __expr19 := (next(sender.abp) <-> case
--- __expr5 : case
--- __expr15 : __expr1;
--- TRUE : sender.abp;
--- esac;
--- TRUE : sender.abp;
--- esac) ;
-
--- DEFINE __expr13 := (r2s_out.tag.1 & !r2s_out.tag.0) ;
-
--- DEFINE __expr94 := case
--- s2r_out.data.2 : (next(s2r_out.data.2) & __expr93);
--- TRUE : (__expr81 & __expr93);
--- esac ;
-
--- DEFINE __expr45 := !next(s2r_in.data.4) ;
-
--- DEFINE __expr25 := case
--- sender.data.5 : (next(sender.data.5) & __expr24);
--- TRUE : (!next(sender.data.5) & __expr24);
--- esac ;
-
--- DEFINE __expr141 := !__expr6 ;
-
--- DEFINE __expr118 := case
--- s2r_out.data.3 : (next(receiver.data.3) & __expr116);
--- TRUE : (__expr117 & __expr116);
--- esac ;
-
--- DEFINE __expr37 := !next(s2r_in.data.0) ;
-
--- DEFINE __expr82 := case
--- s2r_in.data.2 : (next(s2r_out.data.2) & __expr80);
--- TRUE : (__expr81 & __expr80);
--- esac ;
-
--- DEFINE __expr98 := case
--- s2r_out.data.6 : (next(s2r_out.data.6) & __expr97);
--- TRUE : (__expr89 & __expr97);
--- esac ;
-
--- DEFINE __expr117 := !next(receiver.data.3) ;
-
--- DEFINE __expr140 := case
--- __expr61 : case
--- __expr64 : (__expr136 & __expr137);
--- TRUE : __expr139;
--- esac;
--- __expr74 : case
--- __expr109 : case
--- receiver.abp : (next(r2s_in.tag.1) & __expr137);
--- __expr3 : (__expr136 & next(r2s_in.tag.0));
--- esac;
--- TRUE : __expr139;
--- esac;
--- TRUE : __expr139;
--- esac ;
-
--- DEFINE __expr74 := (_process_selector_.2 & _process_selector_.1) ;
-
--- DEFINE __expr53 := case
--- sender.data.0 : next(s2r_in.data.0);
--- TRUE : __expr37;
--- esac ;
-
--- DEFINE __expr81 := !next(s2r_out.data.2) ;
-
--- DEFINE __expr12 := (__expr0 & sender.state.0) ;
-
--- DEFINE __expr6 := (__expr0 & !sender.state.0) ;
-
--- DEFINE __expr50 := case
--- s2r_in.data.6 : (next(s2r_in.data.6) & __expr48);
--- TRUE : (__expr49 & __expr48);
--- esac ;
-
--- DEFINE __expr28 := case
--- __expr5 : (__expr15 | __expr27);
--- TRUE : __expr27;
--- esac ;
-
--- DEFINE __expr65 := !next(r2s_out.tag.0) ;
-
--- DEFINE __expr60 := case
--- __expr29 : __expr52;
--- __expr5 : case
--- __expr8 : case
--- sender.data.7 : (next(s2r_in.data.7) & __expr59);
--- TRUE : (__expr51 & __expr59);
--- esac;
--- TRUE : __expr52;
--- esac;
--- TRUE : __expr52;
--- esac ;
-
--- DEFINE __expr76 := case
--- __expr29 : case
--- __expr31 : case
--- s2r_in.tag.1 : (next(s2r_out.tag.1) & (!s2r_in.tag.0 | next(s2r_out.tag.0)));
--- (next(s2r_out.tag.1) | s2r_in.tag.0) : next(s2r_out.tag.0);
--- TRUE : __expr70;
--- esac;
--- TRUE : __expr73;
--- esac;
--- __expr74 : case
--- __expr75 : (__expr72 & __expr70);
--- TRUE : __expr73;
--- esac;
--- TRUE : __expr73;
--- esac ;
-
--- DEFINE __expr57 := case
--- sender.data.4 : (next(s2r_in.data.4) & __expr56);
--- TRUE : (__expr45 & __expr56);
--- esac ;
-
--- DEFINE __expr20 := case
--- sender.data.0 : next(sender.data.0);
--- TRUE : !next(sender.data.0);
--- esac ;
-
--- DEFINE __expr16 := !next(sender.state.0) ;
-
--- DEFINE __expr138 := case
--- r2s_in.tag.0 : next(r2s_in.tag.0);
--- TRUE : __expr137;
--- esac ;
-
--- DEFINE __expr17 := (!r2s_out.tag.1 & !r2s_out.tag.0) ;
-
--- DEFINE __expr127 := case
--- receiver.data.1 : (next(receiver.data.1) & __expr126);
--- TRUE : (__expr113 & __expr126);
--- esac ;
-
--- DEFINE __expr49 := !next(s2r_in.data.6) ;
-
--- DEFINE __expr27 := case
--- sender.data.7 : (next(sender.data.7) & __expr26);
--- TRUE : (!next(sender.data.7) & __expr26);
--- esac ;
-
--- DEFINE __expr122 := case
--- s2r_out.data.5 : (next(receiver.data.5) & __expr120);
--- TRUE : (__expr121 & __expr120);
--- esac ;
-
--- DEFINE __expr131 := case
--- receiver.data.5 : (next(receiver.data.5) & __expr130);
--- TRUE : (__expr121 & __expr130);
--- esac ;
-
--- DEFINE __expr86 := case
--- s2r_in.data.4 : (next(s2r_out.data.4) & __expr84);
--- TRUE : (__expr85 & __expr84);
--- esac ;
-
--- DEFINE __expr15 := (__expr12 & ((__expr1 & __expr13) | (sender.abp & __expr14))) ;
-
--- DEFINE __expr73 := case
--- s2r_out.tag.1 : (next(s2r_out.tag.1) & __expr71);
--- TRUE : (__expr72 & __expr71);
--- esac ;
-
--- DEFINE __expr121 := !next(receiver.data.5) ;
-
--- DEFINE __expr40 := case
--- s2r_in.data.1 : (next(s2r_in.data.1) & __expr38);
--- TRUE : (__expr39 & __expr38);
--- esac ;
-
--- DEFINE __expr106 := !next(receiver.state.0) ;
-
--- DEFINE __expr85 := !next(s2r_out.data.4) ;
-
--- DEFINE __expr14 := (!r2s_out.tag.1 & r2s_out.tag.0) ;
-
--- DEFINE __expr136 := !next(r2s_in.tag.1) ;
-
--- DEFINE __expr72 := !next(s2r_out.tag.1) ;
-
--- DEFINE __expr77 := !next(s2r_out.data.0) ;
-
--- DEFINE __expr95 := case
--- s2r_out.data.3 : (next(s2r_out.data.3) & __expr94);
--- TRUE : (__expr83 & __expr94);
--- esac ;
-
--- DEFINE __expr101 := (s2r_out.tag.1 & !s2r_out.tag.0) ;
-
--- DEFINE __expr63 := !__expr62 ;
-
--- DEFINE __expr39 := !next(s2r_in.data.1) ;
-
--- DEFINE __expr22 := case
--- sender.data.2 : (next(sender.data.2) & __expr21);
--- TRUE : (!next(sender.data.2) & __expr21);
--- esac ;
-
--- DEFINE __expr112 := case
--- s2r_out.data.0 : next(receiver.data.0);
--- TRUE : __expr111;
--- esac ;
-
--- DEFINE __expr33 := !next(s2r_in.tag.0) ;
-
--- DEFINE __expr99 := case
--- s2r_out.data.7 : (next(s2r_out.data.7) & __expr98);
--- TRUE : (__expr91 & __expr98);
--- esac ;
-
--- DEFINE __expr18 := case
--- __expr5 : case
--- __expr6 : next(sender.state.1);
--- __expr8 : __expr10;
--- (sender.state.1 & __expr11) : next(sender.state.1);
--- __expr15 : (__expr9 & __expr16);
--- (__expr12 & (((sender.abp & __expr13) | (__expr1 & __expr14)) | (r2s_out.tag.1 & r2s_out.tag.0))) : next(sender.state.1);
--- (__expr12 & __expr17) : __expr10;
--- esac;
--- sender.state.1 : next(sender.state.1);
--- TRUE : (__expr9 & case
--- sender.state.0 : next(sender.state.0);
--- TRUE : __expr16;
--- esac);
--- esac ;
-
--- DEFINE __expr9 := !next(sender.state.1) ;
-
--- DEFINE __expr135 := (next(receiver.abp) <-> case
--- __expr74 : case
--- receiver.state.1 : __expr3;
--- TRUE : receiver.abp;
--- esac;
--- TRUE : receiver.abp;
--- esac) ;
-
--- DEFINE __expr75 := (__expr2 & !receiver.state.0) ;
-
--- DEFINE __expr109 := (__expr108 & __expr62) ;
-
--- DEFINE __expr90 := case
--- s2r_in.data.6 : (next(s2r_out.data.6) & __expr88);
--- TRUE : (__expr89 & __expr88);
--- esac ;
-
--- DEFINE __expr54 := case
--- sender.data.1 : (next(s2r_in.data.1) & __expr53);
--- TRUE : (__expr39 & __expr53);
--- esac ;
-
--- DEFINE __expr31 := (__expr30 & __expr11) ;
-
--- DEFINE __expr62 := (!r2s_in.tag.1 & !r2s_in.tag.0) ;
-
--- DEFINE __expr125 := !next(receiver.data.7) ;
-
--- DEFINE __expr8 := (sender.state.1 & __expr7) ;
-
--- DEFINE __expr44 := case
--- s2r_in.data.3 : (next(s2r_in.data.3) & __expr42);
--- TRUE : (__expr43 & __expr42);
--- esac ;
-
--- DEFINE __expr58 := case
--- sender.data.5 : (next(s2r_in.data.5) & __expr57);
--- TRUE : (__expr47 & __expr57);
--- esac ;
-
--- DEFINE __expr89 := !next(s2r_out.data.6) ;
-
--- DEFINE __expr139 := case
--- r2s_in.tag.1 : (next(r2s_in.tag.1) & __expr138);
--- TRUE : (__expr136 & __expr138);
--- esac ;
-
--- DEFINE __expr128 := case
--- receiver.data.2 : (next(receiver.data.2) & __expr127);
--- TRUE : (__expr115 & __expr127);
--- esac ;
-
--- DEFINE __expr104 := !next(receiver.state.1) ;
-
--- DEFINE __expr2 := !receiver.state.1 ;
-
--- DEFINE __expr43 := !next(s2r_in.data.3) ;
-
--- DEFINE __expr24 := case
--- sender.data.4 : (next(sender.data.4) & __expr23);
--- TRUE : (!next(sender.data.4) & __expr23);
--- esac ;
-
--- DEFINE __expr116 := case
--- s2r_out.data.2 : (next(receiver.data.2) & __expr114);
--- TRUE : (__expr115 & __expr114);
--- esac ;
-
--- DEFINE __expr5 := (!_process_selector_.2 & (__expr4 & _process_selector_.0)) ;
+DEFINE __expr71 := case
+s2r_out.tag.0 : next(s2r_out.tag.0);
+TRUE : __expr70;
+esac ;
+
+DEFINE __expr10 := (__expr9 & next(sender.state.0)) ;
+
+DEFINE __expr3 := !receiver.abp ;
+
+DEFINE __expr119 := !next(receiver.data.4) ;
+
+DEFINE __expr59 := case
+sender.data.6 : (next(s2r_in.data.6) & __expr58);
+TRUE : (__expr49 & __expr58);
+esac ;
+
+DEFINE __expr1 := !sender.abp ;
+
+DEFINE __expr38 := case
+s2r_in.data.0 : next(s2r_in.data.0);
+TRUE : __expr37;
+esac ;
+
+DEFINE __expr111 := !next(receiver.data.0) ;
+
+DEFINE __expr129 := case
+receiver.data.3 : (next(receiver.data.3) & __expr128);
+TRUE : (__expr117 & __expr128);
+esac ;
+
+DEFINE __expr83 := !next(s2r_out.data.3) ;
+
+DEFINE __expr52 := case
+s2r_in.data.7 : (next(s2r_in.data.7) & __expr50);
+TRUE : (__expr51 & __expr50);
+esac ;
+
+DEFINE __expr4 := !_process_selector_.1 ;
+
+DEFINE __expr133 := case
+receiver.data.7 : (next(receiver.data.7) & __expr132);
+TRUE : (__expr125 & __expr132);
+esac ;
+
+DEFINE __expr108 := (__expr2 & receiver.state.0) ;
+
+DEFINE __expr21 := case
+sender.data.1 : (next(sender.data.1) & __expr20);
+TRUE : (!next(sender.data.1) & __expr20);
+esac ;
+
+DEFINE __expr105 := (__expr104 & next(receiver.state.0)) ;
+
+DEFINE __expr36 := case
+__expr29 : case
+__expr31 : (__expr32 & __expr33);
+TRUE : __expr35;
+esac;
+__expr5 : case
+__expr8 : case
+sender.abp : (__expr32 & next(s2r_in.tag.0));
+__expr1 : (next(s2r_in.tag.1) & __expr33);
+esac;
+TRUE : __expr35;
+esac;
+TRUE : __expr35;
+esac ;
+
+DEFINE __expr51 := !next(s2r_in.data.7) ;
+
+DEFINE __expr124 := case
+s2r_out.data.6 : (next(receiver.data.6) & __expr122);
+TRUE : (__expr123 & __expr122);
+esac ;
+
+DEFINE __expr93 := case
+s2r_out.data.1 : (next(s2r_out.data.1) & __expr92);
+TRUE : (__expr79 & __expr92);
+esac ;
+
+DEFINE __expr35 := case
+s2r_in.tag.1 : (next(s2r_in.tag.1) & __expr34);
+TRUE : (__expr32 & __expr34);
+esac ;
+
+DEFINE __expr88 := case
+s2r_in.data.5 : (next(s2r_out.data.5) & __expr86);
+TRUE : (__expr87 & __expr86);
+esac ;
+
+DEFINE __expr7 := (!s2r_in.tag.1 & !s2r_in.tag.0) ;
+
+DEFINE __expr97 := case
+s2r_out.data.5 : (next(s2r_out.data.5) & __expr96);
+TRUE : (__expr87 & __expr96);
+esac ;
+
+DEFINE __expr123 := !next(receiver.data.6) ;
+
+DEFINE __expr42 := case
+s2r_in.data.2 : (next(s2r_in.data.2) & __expr40);
+TRUE : (__expr41 & __expr40);
+esac ;
+
+DEFINE __expr107 := case
+receiver.state.1 : next(receiver.state.1);
+TRUE : (__expr104 & case
+receiver.state.0 : next(receiver.state.0);
+TRUE : __expr106;
+esac);
+esac ;
+
+DEFINE __expr87 := !next(s2r_out.data.5) ;
+
+DEFINE __expr70 := !next(s2r_out.tag.0) ;
+
+DEFINE __expr41 := !next(s2r_in.data.2) ;
+
+DEFINE __expr23 := case
+sender.data.3 : (next(sender.data.3) & __expr22);
+TRUE : (!next(sender.data.3) & __expr22);
+esac ;
+
+DEFINE __expr114 := case
+s2r_out.data.1 : (next(receiver.data.1) & __expr112);
+TRUE : (__expr113 & __expr112);
+esac ;
+
+DEFINE __expr56 := case
+sender.data.3 : (next(s2r_in.data.3) & __expr55);
+TRUE : (__expr43 & __expr55);
+esac ;
+
+DEFINE __expr100 := case
+__expr29 : case
+__expr31 : case
+s2r_in.data.7 : (next(s2r_out.data.7) & __expr90);
+TRUE : (__expr91 & __expr90);
+esac;
+TRUE : __expr99;
+esac;
+TRUE : __expr99;
+esac ;
+
+DEFINE __expr29 := (_process_selector_.2 & __expr4) ;
+
+DEFINE __expr126 := case
+receiver.data.0 : next(receiver.data.0);
+TRUE : __expr111;
+esac ;
+
+DEFINE __expr78 := case
+s2r_in.data.0 : next(s2r_out.data.0);
+TRUE : __expr77;
+esac ;
+
+DEFINE __expr66 := case
+r2s_out.tag.0 : next(r2s_out.tag.0);
+TRUE : __expr65;
+esac ;
+
+DEFINE __expr61 := (!_process_selector_.2 & _process_selector_.1) ;
+
+DEFINE __expr110 := case
+__expr74 : case
+__expr103 : next(receiver.state.1);
+(__expr75 & (((receiver.abp & __expr101) | (__expr3 & __expr102)) | (s2r_out.tag.1 & s2r_out.tag.0))) : __expr105;
+(__expr75 & __expr30) : __expr107;
+receiver.state.1 : __expr105;
+__expr109 : (__expr104 & __expr106);
+(__expr108 & __expr63) : __expr107;
+esac;
+TRUE : __expr107;
+esac ;
+
+DEFINE __expr113 := !next(receiver.data.1) ;
+
+DEFINE __expr130 := case
+receiver.data.4 : (next(receiver.data.4) & __expr129);
+TRUE : (__expr119 & __expr129);
+esac ;
+
+DEFINE __expr137 := !next(r2s_in.tag.0) ;
+
+DEFINE __expr46 := case
+s2r_in.data.4 : (next(s2r_in.data.4) & __expr44);
+TRUE : (__expr45 & __expr44);
+esac ;
+
+DEFINE __expr134 := case
+__expr74 : case
+__expr103 : case
+s2r_out.data.7 : (next(receiver.data.7) & __expr124);
+TRUE : (__expr125 & __expr124);
+esac;
+TRUE : __expr133;
+esac;
+TRUE : __expr133;
+esac ;
+
+DEFINE __expr91 := !next(s2r_out.data.7) ;
+
+DEFINE __expr19 := (next(sender.abp) <-> case
+__expr5 : case
+__expr15 : __expr1;
+TRUE : sender.abp;
+esac;
+TRUE : sender.abp;
+esac) ;
+
+DEFINE __expr13 := (r2s_out.tag.1 & !r2s_out.tag.0) ;
+
+DEFINE __expr94 := case
+s2r_out.data.2 : (next(s2r_out.data.2) & __expr93);
+TRUE : (__expr81 & __expr93);
+esac ;
+
+DEFINE __expr45 := !next(s2r_in.data.4) ;
+
+DEFINE __expr25 := case
+sender.data.5 : (next(sender.data.5) & __expr24);
+TRUE : (!next(sender.data.5) & __expr24);
+esac ;
+
+DEFINE __expr141 := !__expr6 ;
+
+DEFINE __expr118 := case
+s2r_out.data.3 : (next(receiver.data.3) & __expr116);
+TRUE : (__expr117 & __expr116);
+esac ;
+
+DEFINE __expr37 := !next(s2r_in.data.0) ;
+
+DEFINE __expr82 := case
+s2r_in.data.2 : (next(s2r_out.data.2) & __expr80);
+TRUE : (__expr81 & __expr80);
+esac ;
+
+DEFINE __expr98 := case
+s2r_out.data.6 : (next(s2r_out.data.6) & __expr97);
+TRUE : (__expr89 & __expr97);
+esac ;
+
+DEFINE __expr117 := !next(receiver.data.3) ;
+
+DEFINE __expr140 := case
+__expr61 : case
+__expr64 : (__expr136 & __expr137);
+TRUE : __expr139;
+esac;
+__expr74 : case
+__expr109 : case
+receiver.abp : (next(r2s_in.tag.1) & __expr137);
+__expr3 : (__expr136 & next(r2s_in.tag.0));
+esac;
+TRUE : __expr139;
+esac;
+TRUE : __expr139;
+esac ;
+
+DEFINE __expr74 := (_process_selector_.2 & _process_selector_.1) ;
+
+DEFINE __expr53 := case
+sender.data.0 : next(s2r_in.data.0);
+TRUE : __expr37;
+esac ;
+
+DEFINE __expr81 := !next(s2r_out.data.2) ;
+
+DEFINE __expr12 := (__expr0 & sender.state.0) ;
+
+DEFINE __expr6 := (__expr0 & !sender.state.0) ;
+
+DEFINE __expr50 := case
+s2r_in.data.6 : (next(s2r_in.data.6) & __expr48);
+TRUE : (__expr49 & __expr48);
+esac ;
+
+DEFINE __expr28 := case
+__expr5 : (__expr15 | __expr27);
+TRUE : __expr27;
+esac ;
+
+DEFINE __expr65 := !next(r2s_out.tag.0) ;
+
+DEFINE __expr60 := case
+__expr29 : __expr52;
+__expr5 : case
+__expr8 : case
+sender.data.7 : (next(s2r_in.data.7) & __expr59);
+TRUE : (__expr51 & __expr59);
+esac;
+TRUE : __expr52;
+esac;
+TRUE : __expr52;
+esac ;
+
+DEFINE __expr76 := case
+__expr29 : case
+__expr31 : case
+s2r_in.tag.1 : (next(s2r_out.tag.1) & (!s2r_in.tag.0 | next(s2r_out.tag.0)));
+(next(s2r_out.tag.1) | s2r_in.tag.0) : next(s2r_out.tag.0);
+TRUE : __expr70;
+esac;
+TRUE : __expr73;
+esac;
+__expr74 : case
+__expr75 : (__expr72 & __expr70);
+TRUE : __expr73;
+esac;
+TRUE : __expr73;
+esac ;
+
+DEFINE __expr57 := case
+sender.data.4 : (next(s2r_in.data.4) & __expr56);
+TRUE : (__expr45 & __expr56);
+esac ;
+
+DEFINE __expr20 := case
+sender.data.0 : next(sender.data.0);
+TRUE : !next(sender.data.0);
+esac ;
+
+DEFINE __expr16 := !next(sender.state.0) ;
+
+DEFINE __expr138 := case
+r2s_in.tag.0 : next(r2s_in.tag.0);
+TRUE : __expr137;
+esac ;
+
+DEFINE __expr17 := (!r2s_out.tag.1 & !r2s_out.tag.0) ;
+
+DEFINE __expr127 := case
+receiver.data.1 : (next(receiver.data.1) & __expr126);
+TRUE : (__expr113 & __expr126);
+esac ;
+
+DEFINE __expr49 := !next(s2r_in.data.6) ;
+
+DEFINE __expr27 := case
+sender.data.7 : (next(sender.data.7) & __expr26);
+TRUE : (!next(sender.data.7) & __expr26);
+esac ;
+
+DEFINE __expr122 := case
+s2r_out.data.5 : (next(receiver.data.5) & __expr120);
+TRUE : (__expr121 & __expr120);
+esac ;
+
+DEFINE __expr131 := case
+receiver.data.5 : (next(receiver.data.5) & __expr130);
+TRUE : (__expr121 & __expr130);
+esac ;
+
+DEFINE __expr86 := case
+s2r_in.data.4 : (next(s2r_out.data.4) & __expr84);
+TRUE : (__expr85 & __expr84);
+esac ;
+
+DEFINE __expr15 := (__expr12 & ((__expr1 & __expr13) | (sender.abp & __expr14))) ;
+
+DEFINE __expr73 := case
+s2r_out.tag.1 : (next(s2r_out.tag.1) & __expr71);
+TRUE : (__expr72 & __expr71);
+esac ;
+
+DEFINE __expr121 := !next(receiver.data.5) ;
+
+DEFINE __expr40 := case
+s2r_in.data.1 : (next(s2r_in.data.1) & __expr38);
+TRUE : (__expr39 & __expr38);
+esac ;
+
+DEFINE __expr106 := !next(receiver.state.0) ;
+
+DEFINE __expr85 := !next(s2r_out.data.4) ;
+
+DEFINE __expr14 := (!r2s_out.tag.1 & r2s_out.tag.0) ;
+
+DEFINE __expr136 := !next(r2s_in.tag.1) ;
+
+DEFINE __expr72 := !next(s2r_out.tag.1) ;
+
+DEFINE __expr77 := !next(s2r_out.data.0) ;
+
+DEFINE __expr95 := case
+s2r_out.data.3 : (next(s2r_out.data.3) & __expr94);
+TRUE : (__expr83 & __expr94);
+esac ;
+
+DEFINE __expr101 := (s2r_out.tag.1 & !s2r_out.tag.0) ;
+
+DEFINE __expr63 := !__expr62 ;
+
+DEFINE __expr39 := !next(s2r_in.data.1) ;
+
+DEFINE __expr22 := case
+sender.data.2 : (next(sender.data.2) & __expr21);
+TRUE : (!next(sender.data.2) & __expr21);
+esac ;
+
+DEFINE __expr112 := case
+s2r_out.data.0 : next(receiver.data.0);
+TRUE : __expr111;
+esac ;
+
+DEFINE __expr33 := !next(s2r_in.tag.0) ;
+
+DEFINE __expr99 := case
+s2r_out.data.7 : (next(s2r_out.data.7) & __expr98);
+TRUE : (__expr91 & __expr98);
+esac ;
+
+DEFINE __expr18 := case
+__expr5 : case
+__expr6 : next(sender.state.1);
+__expr8 : __expr10;
+(sender.state.1 & __expr11) : next(sender.state.1);
+__expr15 : (__expr9 & __expr16);
+(__expr12 & (((sender.abp & __expr13) | (__expr1 & __expr14)) | (r2s_out.tag.1 & r2s_out.tag.0))) : next(sender.state.1);
+(__expr12 & __expr17) : __expr10;
+esac;
+sender.state.1 : next(sender.state.1);
+TRUE : (__expr9 & case
+sender.state.0 : next(sender.state.0);
+TRUE : __expr16;
+esac);
+esac ;
+
+DEFINE __expr9 := !next(sender.state.1) ;
+
+DEFINE __expr135 := (next(receiver.abp) <-> case
+__expr74 : case
+receiver.state.1 : __expr3;
+TRUE : receiver.abp;
+esac;
+TRUE : receiver.abp;
+esac) ;
+
+DEFINE __expr75 := (__expr2 & !receiver.state.0) ;
+
+DEFINE __expr109 := (__expr108 & __expr62) ;
+
+DEFINE __expr90 := case
+s2r_in.data.6 : (next(s2r_out.data.6) & __expr88);
+TRUE : (__expr89 & __expr88);
+esac ;
+
+DEFINE __expr54 := case
+sender.data.1 : (next(s2r_in.data.1) & __expr53);
+TRUE : (__expr39 & __expr53);
+esac ;
+
+DEFINE __expr31 := (__expr30 & __expr11) ;
+
+DEFINE __expr62 := (!r2s_in.tag.1 & !r2s_in.tag.0) ;
+
+DEFINE __expr125 := !next(receiver.data.7) ;
+
+DEFINE __expr8 := (sender.state.1 & __expr7) ;
+
+DEFINE __expr44 := case
+s2r_in.data.3 : (next(s2r_in.data.3) & __expr42);
+TRUE : (__expr43 & __expr42);
+esac ;
+
+DEFINE __expr58 := case
+sender.data.5 : (next(s2r_in.data.5) & __expr57);
+TRUE : (__expr47 & __expr57);
+esac ;
+
+DEFINE __expr89 := !next(s2r_out.data.6) ;
+
+DEFINE __expr139 := case
+r2s_in.tag.1 : (next(r2s_in.tag.1) & __expr138);
+TRUE : (__expr136 & __expr138);
+esac ;
+
+DEFINE __expr128 := case
+receiver.data.2 : (next(receiver.data.2) & __expr127);
+TRUE : (__expr115 & __expr127);
+esac ;
+
+DEFINE __expr104 := !next(receiver.state.1) ;
+
+DEFINE __expr2 := !receiver.state.1 ;
+
+DEFINE __expr43 := !next(s2r_in.data.3) ;
+
+DEFINE __expr24 := case
+sender.data.4 : (next(sender.data.4) & __expr23);
+TRUE : (!next(sender.data.4) & __expr23);
+esac ;
+
+DEFINE __expr116 := case
+s2r_out.data.2 : (next(receiver.data.2) & __expr114);
+TRUE : (__expr115 & __expr114);
+esac ;
+
+DEFINE __expr5 := (!_process_selector_.2 & (__expr4 & _process_selector_.0)) ;
 

@@ -23,15 +23,15 @@ pub enum Token {
     Imply,
     LtlFinally,
     LtlGlobally,
-    LtlHistorically,
+    // LtlHistorically,
     LtlOnce,
     LtlSince,
-    LtlTriggered,
+    // LtlTriggered,
     LtlUntil,
-    LtlReleases,
+    // LtlReleases,
     LtlNext,
-    LtlYesterday,
-    LtlWeakyesterday,
+    // LtlYesterday,
+    // LtlWeakyesterday,
 
     // reserved words
     Case,
@@ -76,6 +76,8 @@ tag_token!(latch_var_tag, Token::LatchVar);
 tag_token!(input_var_tag, Token::InputVar);
 tag_token!(init_tag, Token::Init);
 tag_token!(trans_tag, Token::Trans);
+tag_token!(invariant_tag, Token::Invariant);
+tag_token!(fairness_tag, Token::Fairness);
 tag_token!(ltlspec_tag, Token::LtlSpec);
 tag_token!(becomes_tag, Token::Becomes);
 tag_token!(not_tag, Token::Not);
@@ -97,6 +99,7 @@ tag_token!(ltl_finally_tag, Token::LtlFinally);
 tag_token!(ltl_next_tag, Token::LtlNext);
 tag_token!(ltl_once_tag, Token::LtlOnce);
 tag_token!(ltl_until_tag, Token::LtlUntil);
+tag_token!(ltl_since_tag, Token::LtlSince);
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(C)]

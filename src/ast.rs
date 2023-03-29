@@ -34,6 +34,7 @@ pub enum Infix {
     Imply,
     Iff,
     LtlUntil,
+    LtlSince,
 }
 
 impl Display for Infix {
@@ -44,6 +45,7 @@ impl Display for Infix {
             Infix::Imply => "->",
             Infix::Iff => "<->",
             Infix::LtlUntil => "U",
+            Infix::LtlSince => "S",
         };
         write!(f, "{}", display)
     }
