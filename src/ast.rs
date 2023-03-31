@@ -74,11 +74,6 @@ pub enum Expr {
     LitExpr(bool),
     PrefixExpr(Prefix, Box<Expr>),
     InfixExpr(Infix, Box<Expr>, Box<Expr>),
-    ConditionalExpr {
-        cond: Box<Expr>,
-        yes: Box<Expr>,
-        no: Box<Expr>,
-    },
     CaseExpr(CaseExpr),
 }
 
@@ -115,11 +110,6 @@ impl Display for Expr {
             }
             Expr::PrefixExpr(prefix, expr) => write!(f, "{}({})", prefix, expr),
             Expr::InfixExpr(infix, left, right) => write!(f, "({}){}({})", left, infix, right),
-            Expr::ConditionalExpr {
-                cond: _,
-                yes: _,
-                no: _,
-            } => todo!(),
             Expr::CaseExpr(case_expr) => write!(f, "{}", case_expr),
         }
     }

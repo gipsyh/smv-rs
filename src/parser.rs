@@ -115,23 +115,23 @@ fn parse_prefix_expr(input: Tokens) -> IResult<Tokens, Expr> {
     }
 }
 
-fn _parse_conditional_expr(input: Tokens) -> IResult<Tokens, Expr> {
-    let (i1, (cond, _, yes, _, no)) = tuple((
-        parse_atom_expr,
-        _conditional_tag,
-        parse_atom_expr,
-        colon_tag,
-        parse_atom_expr,
-    ))(input)?;
-    Ok((
-        i1,
-        Expr::ConditionalExpr {
-            cond: Box::new(cond),
-            yes: Box::new(yes),
-            no: Box::new(no),
-        },
-    ))
-}
+// fn _parse_conditional_expr(input: Tokens) -> IResult<Tokens, Expr> {
+//     let (i1, (cond, _, yes, _, no)) = tuple((
+//         parse_atom_expr,
+//         _conditional_tag,
+//         parse_atom_expr,
+//         colon_tag,
+//         parse_atom_expr,
+//     ))(input)?;
+//     Ok((
+//         i1,
+//         Expr::ConditionalExpr {
+//             cond: Box::new(cond),
+//             yes: Box::new(yes),
+//             no: Box::new(no),
+//         },
+//     ))
+// }
 
 fn parse_atom_expr(input: Tokens) -> IResult<Tokens, Expr> {
     alt((

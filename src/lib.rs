@@ -74,11 +74,6 @@ impl SMV {
                     .collect();
                 Expr::CaseExpr(case_expr)
             }
-            Expr::ConditionalExpr {
-                cond: _,
-                yes: _,
-                no: _,
-            } => todo!(),
         }
     }
 
