@@ -1,10 +1,12 @@
 mod ast;
+pub mod bdd;
 mod lexer;
 mod parser;
 mod token;
 
+pub use ast::*;
+
 use crate::{parser::parse_tokens, token::Tokens};
-use ast::Expr;
 use lexer::lex_tokens;
 use std::{
     fs::read_to_string,
@@ -26,7 +28,7 @@ pub struct Var {
 }
 
 #[derive(Default, Debug)]
-pub struct SMV {
+pub struct Smv {
     pub defines: Vec<Define>,
     pub vars: Vec<Var>,
     pub inits: Vec<Expr>,
@@ -36,7 +38,7 @@ pub struct SMV {
     pub ltlspecs: Vec<Expr>,
 }
 
-impl SMV {
+impl Smv {
     fn flatten_expr(&mut self, expr: Expr) -> Expr {
         match expr {
             Expr::LitExpr(_) => expr,
@@ -99,7 +101,7 @@ impl SMV {
     }
 }
 
-impl SMV {
+impl Smv {
     fn parse(input: &str) -> Self {
         let tokens = lex_tokens(input).unwrap();
         let tokens = Tokens::new(&tokens);
@@ -114,7 +116,7 @@ impl SMV {
     }
 }
 
-impl Add for SMV {
+impl Add for Smv {
     type Output = Self;
 
     fn add(mut self, rhs: Self) -> Self::Output {
@@ -123,7 +125,7 @@ impl Add for SMV {
     }
 }
 
-impl AddAssign for SMV {
+impl AddAssign for Smv {
     fn add_assign(&mut self, rhs: Self) {
         self.defines.extend(rhs.defines);
         self.vars.extend(rhs.vars);

@@ -3,7 +3,7 @@ use std::{
     ops::{BitAnd, BitOr, Not},
 };
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(Eq, PartialEq, Debug, Clone, Hash)]
 pub enum Prefix {
     Not,
     Next,
@@ -18,8 +18,8 @@ impl Display for Prefix {
         let display = match self {
             Prefix::Not => "!",
             Prefix::Next => "next",
-            Prefix::LtlGlobally => "G",
-            Prefix::LtlFinally => "F",
+            Prefix::LtlGlobally => "[]",
+            Prefix::LtlFinally => "<>",
             Prefix::LtlNext => "X",
             Prefix::LtlOnce => "O",
         };
@@ -27,7 +27,7 @@ impl Display for Prefix {
     }
 }
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Hash, Eq)]
 pub enum Infix {
     And,
     Or,
@@ -40,8 +40,8 @@ pub enum Infix {
 impl Display for Infix {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let display = match self {
-            Infix::And => "&",
-            Infix::Or => "|",
+            Infix::And => "&&",
+            Infix::Or => "||",
             Infix::Imply => "->",
             Infix::Iff => "<->",
             Infix::LtlUntil => "U",
@@ -51,7 +51,7 @@ impl Display for Infix {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct CaseExpr {
     pub branchs: Vec<(Expr, Expr)>,
 }
@@ -68,7 +68,7 @@ impl Display for CaseExpr {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub enum Expr {
     Ident(String),
     LitExpr(bool),

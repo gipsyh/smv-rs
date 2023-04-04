@@ -1,7 +1,7 @@
 use crate::{
     ast::{CaseExpr, Expr, Infix, Prefix},
     token::*,
-    Define, Var, SMV,
+    Define, Smv, Var,
 };
 use nom::{
     branch::alt,
@@ -54,7 +54,12 @@ fn parse_ident(input: Tokens) -> IResult<Tokens, String> {
         Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)))
     } else {
         match t1.tok[0].clone() {
-            Token::Ident(name) => Ok((i1, name.replace('.', "_"))),
+            Token::Ident(mut name) => {
+                while let Some(n) = name.strip_prefix("_") {
+                    name = n.to_string();
+                }
+                Ok((i1, name.replace('.', "_")))
+            }
             _ => Err(nom::Err::Error(Error::new(input, ErrorKind::Tag))),
         }
     }
@@ -69,8 +74,6 @@ fn parse_literal(input: Tokens) -> IResult<Tokens, bool> {
     assert!(!t1.tok.is_empty());
     match t1.tok[0].clone() {
         Token::BoolLiteral(b) => Ok((i1, b)),
-        // Token::IntLiteral(name) => Ok((i1, Literal::IntLiteral(name))),
-        // Token::StringLiteral(s) => Ok((i1, Literal::StringLiteral(s))),
         _ => Err(nom::Err::Error(Error::new(input, ErrorKind::Tag))),
     }
 }
@@ -185,12 +188,12 @@ fn parse_define(input: Tokens) -> IResult<Tokens, Define> {
     ))
 }
 
-fn parse_defines(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_defines(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = define_tag(input)?;
     many0(parse_define)(i1).map(|(tokens, defines)| {
         (
             tokens,
-            SMV {
+            Smv {
                 defines,
                 ..Default::default()
             },
@@ -204,12 +207,12 @@ fn parse_var(input: Tokens) -> IResult<Tokens, Var> {
     Ok((i1, Var { ident }))
 }
 
-fn parse_vars(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_vars(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = alt((latch_var_tag, input_var_tag))(input)?;
     many0(parse_var)(i1).map(|(tokens, vars)| {
         (
             tokens,
-            SMV {
+            Smv {
                 vars,
                 ..Default::default()
             },
@@ -217,12 +220,12 @@ fn parse_vars(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-fn parse_inits(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_inits(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = init_tag(input)?;
     many0(parse_expr)(i1).map(|(input, inits)| {
         (
             input,
-            SMV {
+            Smv {
                 inits,
                 ..Default::default()
             },
@@ -230,12 +233,12 @@ fn parse_inits(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-fn parse_trans(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_trans(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = trans_tag(input)?;
     many0(parse_expr)(i1).map(|(input, trans)| {
         (
             input,
-            SMV {
+            Smv {
                 trans,
                 ..Default::default()
             },
@@ -243,12 +246,12 @@ fn parse_trans(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-fn parse_invariant(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_invariant(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = invariant_tag(input)?;
     many0(parse_expr)(i1).map(|(input, invariants)| {
         (
             input,
-            SMV {
+            Smv {
                 invariants,
                 ..Default::default()
             },
@@ -256,12 +259,12 @@ fn parse_invariant(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-fn parse_fairness(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_fairness(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = fairness_tag(input)?;
     many0(parse_expr)(i1).map(|(input, fairness)| {
         (
             input,
-            SMV {
+            Smv {
                 fairness,
                 ..Default::default()
             },
@@ -269,12 +272,12 @@ fn parse_fairness(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-fn parse_ltlspecs(input: Tokens) -> IResult<Tokens, SMV> {
+fn parse_ltlspecs(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = ltlspec_tag(input)?;
     many0(parse_expr)(i1).map(|(input, ltlspecs)| {
         (
             input,
-            SMV {
+            Smv {
                 ltlspecs,
                 ..Default::default()
             },
@@ -282,13 +285,12 @@ fn parse_ltlspecs(input: Tokens) -> IResult<Tokens, SMV> {
     })
 }
 
-pub fn parse_tokens(input: Tokens) -> Result<SMV, nom::Err<nom::error::Error<Tokens<'_>>>> {
+pub fn parse_tokens(input: Tokens) -> Result<Smv, nom::Err<nom::error::Error<Tokens<'_>>>> {
     let (input, _) = module_tag(input)?;
     let (input, ident) = parse_ident(input)?;
     if ident != *"main" {
         return Err(nom::Err::Error(Error::new(input, ErrorKind::Tag)));
     }
-    dbg!(input);
     let (input, smvs) = many0(alt((
         parse_inits,
         parse_vars,
@@ -300,6 +302,6 @@ pub fn parse_tokens(input: Tokens) -> Result<SMV, nom::Err<nom::error::Error<Tok
     )))(input)?;
     dbg!(input);
     assert!(input.tok.is_empty());
-    let smv = smvs.into_iter().fold(SMV::default(), |sum, smv| sum + smv);
+    let smv = smvs.into_iter().fold(Smv::default(), |sum, smv| sum + smv);
     Ok(smv)
 }
