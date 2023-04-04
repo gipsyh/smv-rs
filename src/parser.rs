@@ -55,7 +55,7 @@ fn parse_ident(input: Tokens) -> IResult<Tokens, String> {
     } else {
         match t1.tok[0].clone() {
             Token::Ident(mut name) => {
-                while let Some(n) = name.strip_prefix("_") {
+                while let Some(n) = name.strip_prefix('_') {
                     name = n.to_string();
                 }
                 Ok((i1, name.replace('.', "_")))

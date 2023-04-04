@@ -5,32 +5,26 @@ use std::collections::HashMap;
 pub struct SmvBdd {
     pub symbols: HashMap<String, usize>,
     pub cudd: Cudd,
-    pub vars: Vec<DdNode>,
     pub trans: DdNode,
     pub init: DdNode,
-    pub cache: HashMap<Expr, DdNode>,
 }
 
 impl SmvBdd {
-    pub fn symbol_to_bdd(&mut self, symbol: &String) -> DdNode {
-        self.vars[self.symbols[symbol]].clone()
-    }
-
     pub fn expr_to_bdd(&mut self, expr: &Expr) -> DdNode {
-        if let Some(bdd) = self.cache.get(expr) {
-            return bdd.clone();
-        }
         let ans = match expr {
-            Expr::Ident(ident) => self.symbol_to_bdd(ident),
+            Expr::Ident(ident) => self.cudd.ith_var(self.symbols[ident]),
             Expr::LitExpr(lit) => self.cudd.constant(*lit),
             Expr::PrefixExpr(op, sub_expr) => {
                 let expr_bdd = self.expr_to_bdd(sub_expr);
                 match op {
                     crate::ast::Prefix::Not => !expr_bdd,
                     crate::ast::Prefix::Next => {
-                        let num_vars = self.vars.len();
-                        self.cudd
-                            .swap_vars(&expr_bdd, 0..num_vars, num_vars..2 * num_vars)
+                        let num_vars = self.symbols.len();
+                        self.cudd.swap_vars(
+                            &expr_bdd,
+                            (0..num_vars).map(|x| x * 2),
+                            (0..num_vars).map(|x| x * 2 + 1),
+                        )
                     }
                     _ => todo!(),
                 }
@@ -47,49 +41,34 @@ impl SmvBdd {
                 }
             }
             Expr::CaseExpr(case_expr) => {
-                if case_expr.branchs.len() == 2 {
-                    let cond0 = self.expr_to_bdd(&case_expr.branchs[0].0);
-                    let res0 = self.expr_to_bdd(&case_expr.branchs[0].1);
-                    let res1 = self.expr_to_bdd(&case_expr.branchs[1].1);
-                    let ans1 = &cond0 & res0;
-                    let ans2 = !cond0 & res1;
-                    let ans = ans1 | ans2;
-                    ans
-                } else {
-                    let mut previous_all_false = self.cudd.constant(true);
-                    let mut ans = self.cudd.constant(false);
-                    for (cond, res) in case_expr.branchs.iter() {
-                        let cond = self.expr_to_bdd(cond);
-                        let res = self.expr_to_bdd(res);
-                        ans = ans | (&previous_all_false & &cond & res);
-                        previous_all_false = &previous_all_false & !cond;
-                    }
-                    ans
+                let mut ans = self.expr_to_bdd(&case_expr.branchs.last().unwrap().1);
+                for i in (0..case_expr.branchs.len() - 1).rev() {
+                    let cond = self.expr_to_bdd(&case_expr.branchs[i].0);
+                    let res = self.expr_to_bdd(&case_expr.branchs[i].1);
+                    ans = self.cudd.if_then_else(&cond, &res, &ans);
                 }
+                ans
             }
         };
-        self.cache.insert(expr.clone(), ans.clone());
         ans
     }
 
     pub fn new(smv: &Smv) -> Self {
         let mut cudd = Cudd::new();
         let mut symbols = HashMap::new();
-        let mut vars = Vec::new();
         let trans = cudd.constant(true);
         let init = cudd.constant(true);
         for i in 0..smv.vars.len() {
-            assert!(symbols.insert(smv.vars[i].ident.clone(), i).is_none());
-            vars.push(cudd.ith_var(i));
-            cudd.ith_var(i + smv.vars.len());
+            let current = i * 2;
+            let next = current + 1;
+            assert!(symbols.insert(smv.vars[i].ident.clone(), current).is_none());
+            cudd.ith_var(next);
         }
         let mut ret = Self {
             symbols,
             cudd,
-            vars,
             trans,
             init,
-            cache: HashMap::new(),
         };
         for i in 0..smv.trans.len() {
             let expr_ddnode = ret.expr_to_bdd(&smv.trans[i]);
