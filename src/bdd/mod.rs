@@ -2,7 +2,7 @@ mod trans;
 pub use trans::*;
 
 use crate::{ast::Expr, Prefix, Smv};
-use cudd::{Cudd, DdNode};
+use cudd::{Cudd, Bdd};
 use std::collections::HashMap;
 
 #[derive(Clone)]
@@ -10,10 +10,10 @@ pub struct SmvBdd {
     pub symbols: HashMap<String, usize>,
     pub cudd: Cudd,
     pub trans: SmvTransBdd,
-    pub init: DdNode,
+    pub init: Bdd,
 }
 
-pub fn expr_to_bdd(cudd: &Cudd, symbols: &HashMap<String, usize>, expr: &Expr) -> DdNode {
+pub fn expr_to_bdd(cudd: &Cudd, symbols: &HashMap<String, usize>, expr: &Expr) -> Bdd {
     let ans = match expr {
         Expr::Ident(ident) => cudd.ith_var(symbols[ident]),
         Expr::LitExpr(lit) => cudd.constant(*lit),

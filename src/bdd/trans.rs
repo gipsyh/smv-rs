@@ -1,4 +1,4 @@
-use cudd::{Cudd, DdNode};
+use cudd::{Cudd, Bdd};
 
 pub enum SmvTransBddMethod {
     Partition(usize),
@@ -8,16 +8,16 @@ pub enum SmvTransBddMethod {
 #[derive(Clone, Debug)]
 pub struct SmvTransBdd {
     pub cudd: Cudd,
-    pub trans: DdNode,
+    pub trans: Bdd,
 }
 
 impl SmvTransBdd {
-    pub fn new(cudd: Cudd, trans: Vec<DdNode>, _method: SmvTransBddMethod) -> Self {
+    pub fn new(cudd: Cudd, trans: Vec<Bdd>, _method: SmvTransBddMethod) -> Self {
         let trans = trans.iter().fold(cudd.constant(true), |tran, x| tran & x);
         Self { cudd, trans }
     }
 
-    pub fn pre_image(&self, bdd: &DdNode) -> DdNode {
+    pub fn pre_image(&self, bdd: &Bdd) -> Bdd {
         let vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 0);
         let next_vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 1);
         let mut bdd = bdd.swap_vars(vars, next_vars.clone());
@@ -25,7 +25,7 @@ impl SmvTransBdd {
         bdd
     }
 
-    pub fn post_image(&self, bdd: &DdNode) -> DdNode {
+    pub fn post_image(&self, bdd: &Bdd) -> Bdd {
         let vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 0);
         let next_vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 1);
         let bdd = bdd.and_abstract(&self.trans, vars.clone());
