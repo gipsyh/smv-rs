@@ -68,13 +68,20 @@ impl Smv {
                 Box::new(self.flatten_expr(*left)),
                 Box::new(self.flatten_expr(*right)),
             ),
-            Expr::CaseExpr(mut case_expr) => {
-                case_expr.branchs = case_expr
-                    .branchs
-                    .into_iter()
-                    .map(|(x, y)| (self.flatten_expr(x), self.flatten_expr(y)))
-                    .collect();
-                Expr::CaseExpr(case_expr)
+            Expr::CaseExpr(case_expr) => {
+                // case_expr.branchs = case_expr
+                //     .branchs
+                //     .into_iter()
+                //     .map(|(x, y)| (self.flatten_expr(x), self.flatten_expr(y)))
+                //     .collect();
+                // Expr::CaseExpr(case_expr)
+                let mut ans = self.flatten_expr(case_expr.branchs.last().unwrap().1.clone());
+                for i in (0..case_expr.branchs.len() - 1).rev() {
+                    let cond = self.flatten_expr(case_expr.branchs[i].0.clone());
+                    let res = self.flatten_expr(case_expr.branchs[i].1.clone());
+                    ans = (cond.clone() & res) | (!cond & ans);
+                }
+                ans
             }
         }
     }
