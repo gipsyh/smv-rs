@@ -1,4 +1,5 @@
-use cudd::{Cudd, Bdd};
+use bdds::{Bdd, BddManager};
+use std::ops::{BitAnd, BitOr, BitXor, Not};
 
 pub enum SmvTransBddMethod {
     Partition(usize),
@@ -6,35 +7,66 @@ pub enum SmvTransBddMethod {
 }
 
 #[derive(Clone, Debug)]
-pub struct SmvTransBdd {
-    pub cudd: Cudd,
-    pub trans: Bdd,
+pub struct SmvTransBdd<BM: BddManager>
+where
+    for<'a, 'b> &'a BM::Bdd: Not<Output = BM::Bdd>
+        + BitAnd<BM::Bdd, Output = BM::Bdd>
+        + BitAnd<&'b BM::Bdd, Output = BM::Bdd>
+        + BitOr<BM::Bdd, Output = BM::Bdd>
+        + BitOr<&'b BM::Bdd, Output = BM::Bdd>
+        + BitXor<BM::Bdd, Output = BM::Bdd>
+        + BitXor<&'b BM::Bdd, Output = BM::Bdd>,
+{
+    pub manager: BM,
+    pub trans: BM::Bdd,
 }
 
-impl SmvTransBdd {
-    pub fn new(cudd: Cudd, trans: Vec<Bdd>, _method: SmvTransBddMethod) -> Self {
-        let trans = trans.iter().fold(cudd.constant(true), |tran, x| tran & x);
-        Self { cudd, trans }
+impl<BM: BddManager> SmvTransBdd<BM>
+where
+    for<'a, 'b> &'a BM::Bdd: Not<Output = BM::Bdd>
+        + BitAnd<BM::Bdd, Output = BM::Bdd>
+        + BitAnd<&'b BM::Bdd, Output = BM::Bdd>
+        + BitOr<BM::Bdd, Output = BM::Bdd>
+        + BitOr<&'b BM::Bdd, Output = BM::Bdd>
+        + BitXor<BM::Bdd, Output = BM::Bdd>
+        + BitXor<&'b BM::Bdd, Output = BM::Bdd>,
+{
+    pub fn new(manager: BM, trans: Vec<BM::Bdd>, _method: SmvTransBddMethod) -> Self {
+        let trans = {
+            let mut res = vec![];
+            for tran in trans {
+                if !res.contains(&tran) {
+                    res.push(tran);
+                }
+            }
+            res
+        };
+        dbg!(trans.len());
+        let mut res = manager.constant(true);
+        for i in 0..trans.len() {
+            dbg!(i);
+            res &= &trans[i];
+        }
+        Self {
+            manager,
+            trans: res,
+        }
     }
 
-    pub fn pre_image(&self, bdd: &Bdd) -> Bdd {
-        let vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 0);
-        let next_vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 1);
-        let mut bdd = bdd.swap_vars(vars, next_vars.clone());
-        bdd = bdd.and_abstract(&self.trans, next_vars);
-        bdd
+    pub fn pre_image(&self, bdd: &BM::Bdd) -> BM::Bdd {
+        bdd.pre_image(&self.trans)
     }
 
-    pub fn post_image(&self, bdd: &Bdd) -> Bdd {
-        let vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 0);
-        let next_vars = (0..self.cudd.num_var()).filter(|x| x % 2 == 1);
-        let bdd = bdd.and_abstract(&self.trans, vars.clone());
-        bdd.swap_vars(next_vars, vars)
+    pub fn post_image(&self, bdd: &BM::Bdd) -> BM::Bdd {
+        bdd.post_image(&self.trans)
     }
 
-    pub fn clone_with_new_cudd(&self) -> Self {
-        let cudd = Cudd::new();
-        let trans = cudd.translocate(&self.trans);
-        Self { cudd, trans }
-    }
+    // pub fn clone_with_new_cudd(&self) -> Self {
+    //     let cudd = Cudd::new();
+    //     let trans = cudd.translocate(&self.trans);
+    //     Self {
+    //         manager: cudd,
+    //         trans,
+    //     }
+    // }
 }
