@@ -41,7 +41,6 @@ where
             }
             res
         };
-        dbg!(trans.len());
         let mut res = manager.constant(true);
         for i in 0..trans.len() {
             dbg!(i);
@@ -61,12 +60,9 @@ where
         bdd.post_image(&self.trans)
     }
 
-    // pub fn clone_with_new_cudd(&self) -> Self {
-    //     let cudd = Cudd::new();
-    //     let trans = cudd.translocate(&self.trans);
-    //     Self {
-    //         manager: cudd,
-    //         trans,
-    //     }
-    // }
+    pub fn clone_with_new_manager(&self) -> Self {
+        let manager = BM::new();
+        let trans = manager.translocate(&self.trans);
+        Self { manager, trans }
+    }
 }

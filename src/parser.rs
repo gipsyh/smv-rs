@@ -13,6 +13,7 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
+use std::collections::HashMap;
 
 #[derive(PartialEq, PartialOrd, Debug, Clone)]
 pub enum Precedence {
@@ -178,23 +179,20 @@ fn parse_expr(input: Tokens) -> IResult<Tokens, Expr> {
 fn parse_define(input: Tokens) -> IResult<Tokens, Define> {
     let (i1, (ident, _, expr, _)) =
         tuple((parse_ident, becomes_tag, parse_expr, semicolon_tag))(input)?;
-    Ok((
-        i1,
-        Define {
-            ident,
-            expr,
-            flatten: false,
-        },
-    ))
+    Ok((i1, Define { ident, expr }))
 }
 
 fn parse_defines(input: Tokens) -> IResult<Tokens, Smv> {
     let (i1, _) = define_tag(input)?;
     many0(parse_define)(i1).map(|(tokens, defines)| {
+        let mut defines_map = HashMap::new();
+        for define in defines {
+            defines_map.insert(define.ident.clone(), define);
+        }
         (
             tokens,
             Smv {
-                defines,
+                defines: defines_map,
                 ..Default::default()
             },
         )

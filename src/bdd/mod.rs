@@ -1,7 +1,7 @@
 mod trans;
 pub use trans::*;
 
-use crate::{ast::Expr, Prefix, Smv};
+use crate::{ast::Expr, Define, Prefix, Smv};
 use bdds::{Bdd, BddManager};
 use std::{
     collections::HashMap,
@@ -19,8 +19,9 @@ where
         + BitXor<BM::Bdd, Output = BM::Bdd>
         + BitXor<&'b BM::Bdd, Output = BM::Bdd>,
 {
-    pub symbols: HashMap<String, usize>,
     pub manager: BM,
+    pub symbols: HashMap<String, usize>,
+    pub defines: HashMap<String, BM::Bdd>,
     pub trans: SmvTransBdd<BM>,
     pub init: BM::Bdd,
 }
@@ -28,6 +29,8 @@ where
 pub fn expr_to_bdd<BM: BddManager>(
     manager: &BM,
     symbols: &HashMap<String, usize>,
+    defines: &HashMap<String, Define>,
+    defines_cache: &mut HashMap<String, BM::Bdd>,
     expr: &Expr,
 ) -> BM::Bdd
 where
@@ -40,10 +43,21 @@ where
         + BitXor<&'b BM::Bdd, Output = BM::Bdd>,
 {
     let ans = match expr {
-        Expr::Ident(ident) => manager.ith_var(symbols[ident]),
+        Expr::Ident(ident) => {
+            if let Some(define) = defines.get(ident) {
+                return if let Some(bdd) = defines_cache.get(ident) {
+                    bdd.clone()
+                } else {
+                    let bdd = expr_to_bdd(manager, symbols, defines, defines_cache, &define.expr);
+                    defines_cache.insert(define.ident.clone(), bdd.clone());
+                    bdd
+                };
+            }
+            manager.ith_var(symbols[ident])
+        }
         Expr::LitExpr(lit) => manager.constant(*lit),
         Expr::PrefixExpr(op, sub_expr) => {
-            let expr_bdd = expr_to_bdd(manager, symbols, sub_expr);
+            let expr_bdd = expr_to_bdd(manager, symbols, defines, defines_cache, sub_expr);
             match op {
                 crate::ast::Prefix::Not => !expr_bdd,
                 crate::ast::Prefix::Next => expr_bdd.next_state(),
@@ -51,8 +65,8 @@ where
             }
         }
         Expr::InfixExpr(op, left, right) => {
-            let left_bdd = expr_to_bdd(manager, symbols, left);
-            let right_bdd = expr_to_bdd(manager, symbols, right);
+            let left_bdd = expr_to_bdd(manager, symbols, defines, defines_cache, left);
+            let right_bdd = expr_to_bdd(manager, symbols, defines, defines_cache, right);
             match op {
                 crate::ast::Infix::And => left_bdd & right_bdd,
                 crate::ast::Infix::Or => left_bdd | right_bdd,
@@ -62,10 +76,28 @@ where
             }
         }
         Expr::CaseExpr(case_expr) => {
-            let mut ans = expr_to_bdd(manager, symbols, &case_expr.branchs.last().unwrap().1);
+            let mut ans = expr_to_bdd(
+                manager,
+                symbols,
+                defines,
+                defines_cache,
+                &case_expr.branchs.last().unwrap().1,
+            );
             for i in (0..case_expr.branchs.len() - 1).rev() {
-                let cond = expr_to_bdd(manager, symbols, &case_expr.branchs[i].0);
-                let res = expr_to_bdd(manager, symbols, &case_expr.branchs[i].1);
+                let cond = expr_to_bdd(
+                    manager,
+                    symbols,
+                    defines,
+                    defines_cache,
+                    &case_expr.branchs[i].0,
+                );
+                let res = expr_to_bdd(
+                    manager,
+                    symbols,
+                    defines,
+                    defines_cache,
+                    &case_expr.branchs[i].1,
+                );
                 ans = cond.if_then_else(&res, &ans);
             }
             ans
@@ -84,37 +116,69 @@ where
         + BitXor<BM::Bdd, Output = BM::Bdd>
         + BitXor<&'b BM::Bdd, Output = BM::Bdd>,
 {
-    pub fn new(manager: &BM, smv: &Smv, method: SmvTransBddMethod) -> Self {
+    pub fn new(manager: &BM, smv: &Smv, method: SmvTransBddMethod, skip_trans: &[usize]) -> Self {
         let mut symbols = HashMap::new();
-        let mut init = manager.constant(true);
         for i in 0..smv.vars.len() {
             let current = i * 2;
             let next = current + 1;
             assert!(symbols.insert(smv.vars[i].ident.clone(), current).is_none());
             manager.ith_var(next);
         }
+
+        let mut defines = HashMap::new();
+        let smv_define = smv.defines.clone();
+        for define in smv_define {
+            let bdd = expr_to_bdd(
+                manager,
+                &symbols,
+                &smv.defines,
+                &mut defines,
+                &define.1.expr,
+            );
+            defines.insert(define.0, bdd);
+        }
+
+        let mut init = manager.constant(true);
         let mut trans = vec![];
         for i in 0..smv.invariants.len() {
-            let expr_ddnode = expr_to_bdd(manager, &symbols, &smv.invariants[i]);
+            let expr_ddnode = expr_to_bdd(
+                manager,
+                &symbols,
+                &smv.defines,
+                &mut defines,
+                &smv.invariants[i],
+            );
             let expr_next_ddnode = expr_to_bdd(
                 manager,
                 &symbols,
+                &smv.defines,
+                &mut defines,
                 &Expr::PrefixExpr(Prefix::Next, Box::new(smv.invariants[i].clone())),
             );
             trans.push(expr_ddnode);
             trans.push(expr_next_ddnode);
         }
-        trans.extend(
-            smv.trans
-                .iter()
-                .map(|expr| expr_to_bdd(manager, &symbols, expr)),
-        );
+        for i in 0..smv.trans.len() {
+            if !skip_trans.contains(&i) {
+                trans.push(expr_to_bdd(
+                    manager,
+                    &symbols,
+                    &smv.defines,
+                    &mut defines,
+                    &smv.trans[i],
+                ))
+            } else {
+                println!("skip: {:}", &smv.trans[i]);
+            }
+        }
         let trans = SmvTransBdd::new(manager.clone(), trans, method);
         for i in 0..smv.inits.len() {
-            let expr_ddnode = expr_to_bdd(manager, &symbols, &smv.inits[i]);
+            let expr_ddnode =
+                expr_to_bdd(manager, &symbols, &smv.defines, &mut defines, &smv.inits[i]);
             init &= expr_ddnode;
         }
         let ret = Self {
+            defines,
             manager: manager.clone(),
             symbols,
             trans,
