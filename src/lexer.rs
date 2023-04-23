@@ -93,6 +93,7 @@ fn lex_reserved_ident(input: &str) -> IResult<&str, Token> {
             "F" => Token::LtlFinally,
             "G" => Token::LtlGlobally,
             "U" => Token::LtlUntil,
+            "V" => Token::LtlRelease,
             "X" => Token::LtlNext,
             "O" => Token::LtlOnce,
             "S" => Token::LtlSince,

@@ -34,6 +34,7 @@ pub enum Infix {
     Imply,
     Iff,
     LtlUntil,
+    LtlRelease,
     LtlSince,
 }
 
@@ -45,6 +46,7 @@ impl Display for Infix {
             Infix::Imply => "->",
             Infix::Iff => "<->",
             Infix::LtlUntil => "U",
+            Infix::LtlRelease => "V",
             Infix::LtlSince => "S",
         };
         write!(f, "{}", display)
@@ -111,6 +113,20 @@ impl Display for Expr {
             Expr::PrefixExpr(prefix, expr) => write!(f, "{}({})", prefix, expr),
             Expr::InfixExpr(infix, left, right) => write!(f, "({}){}({})", left, infix, right),
             Expr::CaseExpr(case_expr) => write!(f, "{}", case_expr),
+        }
+    }
+}
+
+impl Expr {
+    pub fn partition_to_ands(self) -> Vec<Expr> {
+        match self {
+            Expr::InfixExpr(infix, left, right) if matches!(infix, Infix::And) => {
+                let mut left = left.partition_to_ands();
+                let mut right = right.partition_to_ands();
+                left.append(&mut right);
+                left
+            }
+            _ => vec![self],
         }
     }
 }

@@ -119,11 +119,13 @@ where
     pub fn new(manager: &BM, smv: &Smv, method: SmvTransBddMethod, skip_trans: &[usize]) -> Self {
         let mut symbols = HashMap::new();
         for i in 0..smv.vars.len() {
+            dbg!(i);
             let current = i * 2;
             let next = current + 1;
             assert!(symbols.insert(smv.vars[i].ident.clone(), current).is_none());
             manager.ith_var(next);
         }
+        dbg!(manager.num_var());
 
         let mut defines = HashMap::new();
         let smv_define = smv.defines.clone();

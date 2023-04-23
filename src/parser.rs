@@ -23,6 +23,7 @@ pub enum Precedence {
     Imply,
     Iff,
     LtlUntil,
+    LtlRelease,
     LtlSince,
 }
 
@@ -33,6 +34,7 @@ fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
         imply_tag,
         iff_tag,
         ltl_until_tag,
+        ltl_release_tag,
         ltl_since_tag,
     ))(input)?;
     Ok((
@@ -43,6 +45,7 @@ fn parse_infix_op(input: Tokens) -> IResult<Tokens, (Precedence, Infix)> {
             Token::Imply => (Precedence::Imply, Infix::Imply),
             Token::Iff => (Precedence::Iff, Infix::Iff),
             Token::LtlUntil => (Precedence::LtlUntil, Infix::LtlUntil),
+            Token::LtlRelease => (Precedence::LtlRelease, Infix::LtlRelease),
             Token::LtlSince => (Precedence::LtlSince, Infix::LtlSince),
             _ => panic!(),
         },

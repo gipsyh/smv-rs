@@ -28,7 +28,7 @@ pub enum Token {
     LtlSince,
     // LtlTriggered,
     LtlUntil,
-    // LtlReleases,
+    LtlRelease,
     LtlNext,
     // LtlYesterday,
     // LtlWeakyesterday,
@@ -99,6 +99,7 @@ tag_token!(ltl_finally_tag, Token::LtlFinally);
 tag_token!(ltl_next_tag, Token::LtlNext);
 tag_token!(ltl_once_tag, Token::LtlOnce);
 tag_token!(ltl_until_tag, Token::LtlUntil);
+tag_token!(ltl_release_tag, Token::LtlRelease);
 tag_token!(ltl_since_tag, Token::LtlSince);
 
 #[derive(Clone, Copy, PartialEq, Debug)]
