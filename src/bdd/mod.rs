@@ -1,8 +1,6 @@
-mod trans;
-pub use trans::*;
-
-use crate::{ast::Expr, Define, Prefix, Smv};
+use crate::{ast::Expr, Define, Smv};
 use bdds::{Bdd, BddManager};
+use fsmbdd::{FsmBdd, TransBddMethod};
 use std::{
     collections::HashMap,
     ops::{BitAnd, BitOr, BitXor, Not},
@@ -22,8 +20,10 @@ where
     pub manager: BM,
     pub symbols: HashMap<String, usize>,
     pub defines: HashMap<String, BM::Bdd>,
-    pub trans: SmvTransBdd<BM>,
+    pub trans: Vec<BM::Bdd>,
     pub init: BM::Bdd,
+    pub invariants: BM::Bdd,
+    pub justice: Vec<BM::Bdd>,
 }
 
 pub fn expr_to_bdd<BM: BddManager>(
@@ -116,17 +116,14 @@ where
         + BitXor<BM::Bdd, Output = BM::Bdd>
         + BitXor<&'b BM::Bdd, Output = BM::Bdd>,
 {
-    pub fn new(manager: &BM, smv: &Smv, method: SmvTransBddMethod, skip_trans: &[usize]) -> Self {
+    pub fn new(manager: &BM, smv: &Smv) -> Self {
         let mut symbols = HashMap::new();
         for i in 0..smv.vars.len() {
-            dbg!(i);
             let current = i * 2;
             let next = current + 1;
             assert!(symbols.insert(smv.vars[i].ident.clone(), current).is_none());
             manager.ith_var(next);
         }
-        dbg!(manager.num_var());
-
         let mut defines = HashMap::new();
         let smv_define = smv.defines.clone();
         for define in smv_define {
@@ -140,8 +137,7 @@ where
             defines.insert(define.0, bdd);
         }
 
-        let mut init = manager.constant(true);
-        let mut trans = vec![];
+        let mut invariants = manager.constant(true);
         for i in 0..smv.invariants.len() {
             let expr_ddnode = expr_to_bdd(
                 manager,
@@ -150,42 +146,50 @@ where
                 &mut defines,
                 &smv.invariants[i],
             );
-            let expr_next_ddnode = expr_to_bdd(
+            invariants &= expr_ddnode;
+        }
+        let mut trans = vec![];
+        for i in 0..smv.trans.len() {
+            trans.push(expr_to_bdd(
                 manager,
                 &symbols,
                 &smv.defines,
                 &mut defines,
-                &Expr::PrefixExpr(Prefix::Next, Box::new(smv.invariants[i].clone())),
-            );
-            trans.push(expr_ddnode);
-            trans.push(expr_next_ddnode);
+                &smv.trans[i],
+            ))
         }
-        for i in 0..smv.trans.len() {
-            if !skip_trans.contains(&i) {
-                trans.push(expr_to_bdd(
-                    manager,
-                    &symbols,
-                    &smv.defines,
-                    &mut defines,
-                    &smv.trans[i],
-                ))
-            } else {
-                println!("skip: {:}", &smv.trans[i]);
-            }
-        }
-        let trans = SmvTransBdd::new(manager.clone(), trans, method);
+        let mut init = manager.constant(true);
         for i in 0..smv.inits.len() {
             let expr_ddnode =
                 expr_to_bdd(manager, &symbols, &smv.defines, &mut defines, &smv.inits[i]);
             init &= expr_ddnode;
         }
+        let justice = smv
+            .fairness
+            .iter()
+            .map(|fair| expr_to_bdd(manager, &symbols, &smv.defines, &mut defines, fair))
+            .collect();
         let ret = Self {
             defines,
             manager: manager.clone(),
             symbols,
             trans,
             init,
+            invariants,
+            justice,
         };
         ret
+    }
+
+    pub fn to_fsmbdd(&self, method: TransBddMethod) -> FsmBdd<BM> {
+        let trans = fsmbdd::Trans::new(&self.manager, self.trans.clone(), method);
+        FsmBdd {
+            symbols: self.symbols.clone(),
+            manager: self.manager.clone(),
+            init: self.init.clone(),
+            invariants: self.invariants.clone(),
+            trans,
+            justice: self.justice.clone(),
+        }
     }
 }

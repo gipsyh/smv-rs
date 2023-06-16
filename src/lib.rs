@@ -23,12 +23,12 @@ pub struct Define {
     pub expr: Expr,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Var {
     pub ident: String,
 }
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct Smv {
     pub defines: HashMap<String, Define>,
     pub vars: Vec<Var>,
@@ -113,23 +113,25 @@ impl Smv {
         Ok(Self::parse(&s))
     }
 
-    pub fn flatten_defines(&mut self) {
+    pub fn flatten_defines(&self) -> Self {
+        let mut res = self.clone();
         let mut flattend = HashSet::new();
-        for i in 0..self.inits.len() {
-            self.inits[i] = self.flatten_expr(self.inits[i].clone(), &mut flattend);
+        for i in 0..res.inits.len() {
+            res.inits[i] = res.flatten_expr(res.inits[i].clone(), &mut flattend);
         }
-        for i in 0..self.trans.len() {
-            self.trans[i] = self.flatten_expr(self.trans[i].clone(), &mut flattend);
+        for i in 0..res.trans.len() {
+            res.trans[i] = res.flatten_expr(res.trans[i].clone(), &mut flattend);
         }
-        for i in 0..self.invariants.len() {
-            self.invariants[i] = self.flatten_expr(self.invariants[i].clone(), &mut flattend);
+        for i in 0..res.invariants.len() {
+            res.invariants[i] = res.flatten_expr(res.invariants[i].clone(), &mut flattend);
         }
-        for i in 0..self.fairness.len() {
-            self.fairness[i] = self.flatten_expr(self.fairness[i].clone(), &mut flattend);
+        for i in 0..res.fairness.len() {
+            res.fairness[i] = res.flatten_expr(res.fairness[i].clone(), &mut flattend);
         }
-        for i in 0..self.ltlspecs.len() {
-            self.ltlspecs[i] = self.flatten_expr(self.ltlspecs[i].clone(), &mut flattend);
+        for i in 0..res.ltlspecs.len() {
+            res.ltlspecs[i] = res.flatten_expr(res.ltlspecs[i].clone(), &mut flattend);
         }
+        res
     }
 
     fn flatten_to_propositional_define_rec(&self, expr: &Expr) -> Option<Expr> {

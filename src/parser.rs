@@ -301,7 +301,6 @@ pub fn parse_tokens(input: Tokens) -> Result<Smv, nom::Err<nom::error::Error<Tok
         parse_fairness,
         parse_ltlspecs,
     )))(input)?;
-    dbg!(input);
     assert!(input.tok.is_empty());
     let smv = smvs.into_iter().fold(Smv::default(), |sum, smv| sum + smv);
     Ok(smv)
