@@ -169,7 +169,7 @@ where
             .iter()
             .map(|fair| expr_to_bdd(manager, &symbols, &smv.defines, &mut defines, fair))
             .collect();
-        let ret = Self {
+        Self {
             defines,
             manager: manager.clone(),
             symbols,
@@ -177,8 +177,7 @@ where
             init,
             invariants,
             justice,
-        };
-        ret
+        }
     }
 
     pub fn to_fsmbdd(&self, method: TransBddMethod) -> FsmBdd<BM> {

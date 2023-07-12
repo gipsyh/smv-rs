@@ -145,20 +145,20 @@ impl Smv {
             }
             Expr::LitExpr(_) => None,
             Expr::PrefixExpr(prefix, sub_expr) => {
-                let sub_expr =
-                    if let Some(sub) = self.flatten_to_propositional_define_rec(&sub_expr) {
-                        sub
-                    } else {
-                        if let Prefix::Not = *prefix {
-                            return None;
-                        }
-                        *sub_expr.clone()
-                    };
+                let sub_expr = if let Some(sub) = self.flatten_to_propositional_define_rec(sub_expr)
+                {
+                    sub
+                } else {
+                    if let Prefix::Not = *prefix {
+                        return None;
+                    }
+                    *sub_expr.clone()
+                };
                 Some(Expr::PrefixExpr(prefix.clone(), Box::new(sub_expr)))
             }
             Expr::InfixExpr(infix, left, right) => {
-                let left_flatten = self.flatten_to_propositional_define_rec(&left);
-                let right_flatten = self.flatten_to_propositional_define_rec(&right);
+                let left_flatten = self.flatten_to_propositional_define_rec(left);
+                let right_flatten = self.flatten_to_propositional_define_rec(right);
                 let (left, right) = match (left_flatten, right_flatten) {
                     (None, None) => {
                         if let Infix::And | Infix::Or | Infix::Iff | Infix::Imply = *infix {
